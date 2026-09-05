@@ -66,7 +66,7 @@ export function CartDrawer() {
           <>
             <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
               {gap > 0 && (
-                <p className="bg-accent text-accent-foreground rounded-lg px-3 py-2 text-sm">
+                <p className="bg-sand px-3 py-2 text-sm">
                   Add {inr(gap)} more to unlock free shipping.
                 </p>
               )}
@@ -86,7 +86,7 @@ export function CartDrawer() {
                       loading="lazy"
                       width={80}
                       height={80}
-                      className="size-20 rounded-xl object-cover"
+                        className="size-20 object-cover"
                     />
                     <div className="flex-1">
                       <p className="text-sm font-semibold">{p.name}</p>
@@ -94,7 +94,7 @@ export function CartDrawer() {
                         {l.mode === "bulk" ? `Bulk · ${l.kg}kg` : l.size}
                       </p>
                       <div className="mt-2 flex items-center gap-2">
-                        <div className="border-border flex items-center rounded-full border">
+                        <div className="border-foreground flex items-center border">
                           <button
                             className="grid size-7 place-items-center"
                             aria-label="Decrease quantity"

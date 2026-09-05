@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BadgeCheck, PackageCheck, Star, Truck, Warehouse } from "lucide-react";
 import heroImg from "@/assets/hero-dryfruits.jpg";
 import { ProductGridSkeleton } from "@/components/common/ProductGridSkeleton";
 import { Button } from "@/components/ui/button";
@@ -14,10 +13,10 @@ export const Route = createFileRoute("/")({
 });
 
 const trust = [
-  { icon: BadgeCheck, label: "Quality Checked" },
-  { icon: PackageCheck, label: "Hygienically Packed" },
-  { icon: Truck, label: "Pan-India Delivery" },
-  { icon: Warehouse, label: "Bulk Pricing" },
+  { n: "01", label: "Quality Checked" },
+  { n: "02", label: "Hygienically Packed" },
+  { n: "03", label: "Pan-India Delivery" },
+  { n: "04", label: "Bulk Pricing" },
 ];
 
 const journey = ["Source", "Quality Check", "Sorting", "Packing", "Dispatch", "Your Door"];
@@ -53,67 +52,63 @@ function Home() {
 
   return (
     <div>
-      {/* Hero */}
-      <section className="bg-sand relative overflow-hidden">
-        <div className="container-page grid items-center gap-10 py-14 md:grid-cols-2 md:py-20">
-          <div className="reveal">
-            <p className="text-muted-foreground text-xs font-semibold tracking-[0.22em] uppercase">
-              Retail &amp; Wholesale
-            </p>
-            <h1 className="font-display mt-4 text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
+      <section className="bg-sand border-border border-b">
+        <div className="container-page grid items-center gap-10 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
+          <div className="max-w-[560px] py-16">
+            <p className="kicker mb-5">Retail &amp; Wholesale</p>
+            <h1 className="hero-h1">
               Premium Dry Fruits,
               <br />
-              Made Simple.
+              <em className="font-serif font-normal italic">Made Simple.</em>
             </h1>
-            <p className="text-muted-foreground mt-5 max-w-md text-base">
+            <p className="text-body mt-[22px] max-w-[430px] text-[17px] leading-[1.6]">
               From your kitchen to your business — shop premium dry fruits in the quantity you
               actually need.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-[30px] flex flex-wrap gap-3">
               <Button size="lg" asChild>
-                <Link to="/shop">Shop Dry Fruits</Link>
+                <Link to="/shop">Shop dry fruits</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link to="/bulk-orders">Buy in Bulk</Link>
+                <Link to="/bulk-orders">Buy in bulk</Link>
               </Button>
             </div>
           </div>
-          <div className="reveal shadow-lift overflow-hidden rounded-3xl">
+          <div className="py-8">
             <img
               src={heroImg}
               alt="Assorted premium dry fruits in a ceramic bowl on linen"
               width={1600}
               height={1104}
-              className="h-full w-full object-cover"
+              className="border-border h-[clamp(280px,38vw,440px)] w-full border object-cover"
             />
           </div>
         </div>
-        <div className="border-border/70 bg-background/60 border-y">
-          <div className="container-page grid grid-cols-2 gap-4 py-4 text-sm md:grid-cols-4">
+        <div className="border-border bg-background border-t">
+          <div className="container-page grid gap-3.5 py-4 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
             {trust.map((t) => (
-              <div key={t.label} className="text-muted-foreground flex items-center gap-2">
-                <t.icon className="text-leaf size-4" />
-                {t.label}
+              <div key={t.label} className="flex items-baseline gap-2.5">
+                <span className="numeral">{t.n}</span>
+                <span className="text-[12px] font-semibold tracking-[0.1em] uppercase">{t.label}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="container-page py-16">
-        <div className="flex items-end justify-between gap-4">
-          <h2 className="font-display text-3xl">Shop by category</h2>
-          <Link to="/shop" className="text-sm font-medium underline underline-offset-4">
+      <section className="container-page pt-16">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-6">
+          <h2 className="heading-shout">Shop by category</h2>
+          <Link to="/shop" className="section-link hover:text-foreground">
             View all
           </Link>
         </div>
-        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid gap-3.5 [grid-template-columns:repeat(auto-fill,minmax(160px,1fr))]">
           {categoriesLoading
             ? Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="border-border bg-card overflow-hidden rounded-2xl border">
-                  <Skeleton className="aspect-square w-full rounded-none" />
-                  <div className="space-y-2 p-3">
+                <div key={i} className="border-border bg-card overflow-hidden border">
+                  <Skeleton className="aspect-square w-full" />
+                  <div className="border-border space-y-2 border-t p-3">
                     <Skeleton className="h-4 w-2/3" />
                     <Skeleton className="h-3 w-full" />
                   </div>
@@ -124,7 +119,7 @@ function Home() {
                   key={c.slug}
                   to="/category/$slug"
                   params={{ slug: c.slug }}
-                  className="group border-border bg-card shadow-soft hover:shadow-lift overflow-hidden rounded-2xl border transition-all hover:-translate-y-1"
+                  className="border-border bg-card hover:bg-sand block overflow-hidden border"
                 >
                   <img
                     src={c.image}
@@ -132,61 +127,63 @@ function Home() {
                     loading="lazy"
                     width={800}
                     height={800}
-                    className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="aspect-square w-full object-cover"
                   />
-                  <div className="p-3">
-                    <p className="text-sm font-semibold">{c.name}</p>
-                    <p className="text-muted-foreground line-clamp-1 text-xs">{c.blurb}</p>
+                  <div className="border-border border-t px-[13px] pt-3 pb-3.5">
+                    <p className="text-[13px] font-bold">{c.name}</p>
+                    <p className="text-muted-foreground mt-[3px] line-clamp-1 text-[11px] leading-[1.4]">
+                      {c.blurb}
+                    </p>
                   </div>
                 </Link>
               ))}
         </div>
       </section>
 
-      {/* Bestsellers */}
-      <section className="container-page py-6">
-        <h2 className="font-display text-3xl">Best sellers</h2>
-        <p className="text-muted-foreground mt-2 text-sm">What our customers reorder most.</p>
-        <div className="mt-8">
-          {bestsellersLoading ? (
-            <ProductGridSkeleton />
-          ) : (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {(bestsellers?.items ?? []).map((p) => (
-                <ProductCard key={p.slug} product={p} />
-              ))}
-            </div>
-          )}
-        </div>
+      <section className="container-page pt-16">
+        <h2 className="heading-shout">Best sellers</h2>
+        <p className="text-body mt-1.5 mb-[26px] text-[14px]">What our customers reorder most.</p>
+        {bestsellersLoading ? (
+          <ProductGridSkeleton />
+        ) : (
+          <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(230px,1fr))]">
+            {(bestsellers?.items ?? []).map((p) => (
+              <ProductCard key={p.slug} product={p} />
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* B2B band */}
       <section className="container-page py-16">
-        <div className="bg-primary text-primary-foreground grid gap-8 rounded-3xl p-8 md:grid-cols-2 md:p-14">
+        <div className="bg-foreground text-background grid gap-10 p-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]">
           <div>
-            <p className="text-xs font-semibold tracking-[0.22em] uppercase opacity-70">
-              For Business
+            <p className="text-gold-light mb-4 text-[11px] font-semibold tracking-[0.24em] uppercase">
+              For business
             </p>
-            <h2 className="font-display mt-4 text-3xl md:text-4xl">Buying for your business?</h2>
-            <p className="mt-4 max-w-md opacity-85">
+            <h2 className="font-display text-[clamp(28px,3.4vw,44px)] leading-[1.04]">
+              Buying for your business?
+            </h2>
+            <p className="text-ink-muted mt-[18px] mb-7 max-w-[420px] text-[15px] leading-[1.7]">
               Better pricing on bulk orders with flexible quantities, GST invoices and dedicated
               support — for retailers, sweet shops, bakeries, cafés, hotels and distributors.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Button size="lg" variant="secondary" asChild>
-                <Link to="/bulk-orders">Get Bulk Pricing</Link>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button size="lg" variant="gold" asChild>
+                <Link to="/bulk-orders">Get bulk pricing</Link>
               </Button>
               <Link
                 to="/bulk-orders"
-                className="inline-flex items-center gap-2 self-center text-sm font-medium underline underline-offset-4"
+                className="border-gold-light text-background hover:text-gold-light border-b-[1.5px] py-[15px] text-[12px] font-bold tracking-[0.16em] uppercase"
               >
-                Explore bulk products <ArrowRight className="size-4" />
+                Explore bulk products →
               </Link>
             </div>
           </div>
-          <div className="bg-primary-foreground/10 rounded-2xl p-6">
-            <p className="text-sm font-semibold">Example: tiered per-kg pricing</p>
-            <ul className="mt-4 space-y-2 text-sm">
+          <div className="border-ink-border border p-[26px]">
+            <p className="mb-[18px] text-[12px] font-bold tracking-[0.12em] uppercase">
+              Example: tiered per-kg pricing
+            </p>
+            <ul>
               {[
                 ["1–4 kg", inr(999)],
                 ["5–9 kg", inr(949)],
@@ -196,84 +193,74 @@ function Home() {
               ].map(([q, p]) => (
                 <li
                   key={q}
-                  className="border-primary-foreground/15 flex justify-between border-b pb-2"
+                  className="border-ink-border flex justify-between gap-4 border-b py-[11px] text-[14px]"
                 >
-                  <span className="opacity-80">{q}</span>
-                  <span className="font-semibold">{p}</span>
+                  <span className="text-ink-muted">{q}</span>
+                  <span className="font-bold">{p}</span>
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-xs opacity-70">
+            <p className="text-ink-faint mt-4 text-[11px] leading-[1.5]">
               Indicative values. All tiers are configurable per product.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Journey */}
-      <section className="container-page py-10">
-        <h2 className="font-display text-3xl">Know what you&apos;re buying</h2>
-        <p className="text-muted-foreground mt-2 max-w-2xl text-sm">
+      <section className="container-page pb-16">
+        <h2 className="heading-shout">Know what you&apos;re buying</h2>
+        <p className="text-body mt-2 mb-[26px] max-w-[620px] text-[14px] leading-[1.65]">
           Every lot is graded, sorted and packed under hygienic conditions. Origin and grade are
           printed on every pack, and sourcing claims are only shown when verified.
         </p>
-        <ol className="mt-8 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <ol className="hairline-grid [grid-template-columns:repeat(auto-fit,minmax(160px,1fr))]">
           {journey.map((step, i) => (
-            <li key={step} className="border-border bg-card shadow-soft rounded-2xl border p-4">
-              <span className="text-muted-foreground text-xs font-semibold">0{i + 1}</span>
-              <p className="mt-1 font-semibold">{step}</p>
+            <li key={step} className="bg-card px-[18px] py-5">
+              <span className="numeral">0{i + 1}</span>
+              <p className="mt-1.5 text-[13px] font-bold">{step}</p>
             </li>
           ))}
         </ol>
       </section>
 
-      {/* Reviews */}
-      <section className="container-page py-16">
-        <h2 className="font-display text-3xl">Customer reviews</h2>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {reviews.map((r) => (
-            <figure
-              key={r.name}
-              className="border-border bg-card shadow-soft rounded-2xl border p-6"
-            >
-              <div className="flex gap-0.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="fill-gold text-gold size-4" />
-                ))}
-              </div>
-              <blockquote className="mt-4 text-sm">{r.text}</blockquote>
-              <figcaption className="text-muted-foreground mt-4 text-xs">
-                {r.name} · {r.city} · Verified Purchase
-              </figcaption>
-            </figure>
-          ))}
+      <section className="border-border bg-sand border-y">
+        <div className="container-page py-16">
+          <h2 className="font-display mb-[30px] text-center text-[clamp(28px,3.2vw,42px)]">
+            Customer reviews
+          </h2>
+          <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
+            {reviews.map((r) => (
+              <figure key={r.name} className="border-border bg-card border px-6 py-[26px]">
+                <div className="text-gold mb-4 text-[13px] tracking-[0.3em]">★★★★★</div>
+                <blockquote className="text-on-card text-[14px] leading-[1.65]">{r.text}</blockquote>
+                <figcaption className="text-muted-foreground mt-[18px] text-[11px] tracking-[0.06em]">
+                  {r.name} · {r.city} · Verified Purchase
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Gifting / combos */}
-      <section className="container-page py-6">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <h2 className="font-display text-3xl">Combos &amp; gift boxes</h2>
-            <p className="text-muted-foreground mt-2 text-sm">
-              Value packs for home, keepsake boxes for gifting.
-            </p>
-          </div>
-          <Link to="/shop" className="text-sm font-medium underline underline-offset-4">
+      <section className="container-page py-16">
+        <div className="mb-2 flex flex-wrap items-end justify-between gap-6">
+          <h2 className="heading-shout">Combos &amp; gift boxes</h2>
+          <Link to="/combos" className="section-link hover:text-foreground">
             See all
           </Link>
         </div>
-        <div className="mt-8">
-          {combosLoading ? (
-            <ProductGridSkeleton count={4} />
-          ) : (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {(combos?.items ?? []).slice(0, 4).map((p) => (
-                <ProductCard key={p.slug} product={p} />
-              ))}
-            </div>
-          )}
-        </div>
+        <p className="text-body mb-[26px] text-[14px]">
+          Value packs for home, keepsake boxes for gifting.
+        </p>
+        {combosLoading ? (
+          <ProductGridSkeleton count={4} />
+        ) : (
+          <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(230px,1fr))]">
+            {(combos?.items ?? []).slice(0, 4).map((p) => (
+              <ProductCard key={p.slug} product={p} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

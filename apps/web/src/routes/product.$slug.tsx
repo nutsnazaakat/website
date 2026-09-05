@@ -81,9 +81,9 @@ function ProductPage() {
 
   if (isLoading) {
     return (
-      <div className="container-page py-8">
-        <div className="grid gap-10 lg:grid-cols-2">
-          <Skeleton className="aspect-square w-full rounded-3xl" />
+      <div className="container-page py-9">
+        <div className="grid items-start gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
+          <Skeleton className="aspect-square w-full" />
           <div className="space-y-4">
             <Skeleton className="h-10 w-3/4" />
             <Skeleton className="h-4 w-1/2" />
@@ -119,56 +119,58 @@ function ProductPage() {
   const countryOfOrigin = product.origin.split(",").pop()?.trim() ?? product.origin;
 
   return (
-    <div className="container-page py-8">
-      <nav className="text-muted-foreground text-xs">
-        <Link to="/" className="hover:text-foreground">
-          Home
-        </Link>{" "}
-        /{" "}
-        <Link to="/shop" className="hover:text-foreground">
-          Shop
-        </Link>{" "}
-        /{" "}
-        <Link
-          to="/category/$slug"
-          params={{ slug: product.category }}
-          className="hover:text-foreground"
-        >
+    <div className="container-page py-9 pb-[72px]">
+      <nav className="text-muted-foreground text-[11px] font-semibold tracking-[0.14em] uppercase">
+        <Link to="/">Home</Link>
+        {" / "}
+        <Link to="/shop">Shop</Link>
+        {" / "}
+        <Link to="/category/$slug" params={{ slug: product.category }}>
           {product.category}
-        </Link>{" "}
-        / <span className="text-foreground">{product.name}</span>
+        </Link>
+        {" / "}
+        <span className="text-foreground">{product.name}</span>
       </nav>
 
-      <div className="mt-6 grid gap-10 lg:grid-cols-2">
+      <div className="mt-6 grid items-start gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
         <ProductGallery
           images={product.images}
           alt={`${product.name} — ${product.grade} grade from ${product.origin}`}
         />
 
-        <div>
+        <div className="max-w-[560px]">
+          <p className="kicker">
+            {product.grade} · {product.origin}
+          </p>
           {product.badge && (
-            <span className="bg-sand rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.14em]">
+            <span className="bg-foreground text-gold-light mt-3 inline-block px-2 py-[5px] text-[9px] font-bold tracking-[0.16em] uppercase">
               {product.badge}
             </span>
           )}
           {/* `destructive`, matching the cancelled-order badge the account area already renders. */}
           {product.soldOut && (
-            <Badge variant="destructive" className="ml-2 rounded-full tracking-[0.14em]">
+            <Badge variant="destructive" className="ml-2 tracking-[0.14em]">
               SOLD OUT
             </Badge>
           )}
-          <h1 className="font-display mt-3 text-4xl leading-tight">{product.name}</h1>
+          <h1 className="font-display mt-3 text-[clamp(32px,3.8vw,50px)] leading-[1.05]">
+            {product.name}
+          </h1>
           <p className="text-muted-foreground mt-2">{product.subtitle}</p>
-          <Rating value={product.rating} count={product.reviewCount} className="mt-3" />
+          <Rating value={product.rating} count={product.reviewCount} showStars className="mt-3" />
+          <p className="text-body mt-4 text-[15px] leading-[1.7]">{product.description}</p>
 
           <Tabs defaultValue="retail" className="mt-6">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full max-w-[280px] grid-cols-2">
               <TabsTrigger value="retail">Buy Retail</TabsTrigger>
               <TabsTrigger value="bulk">Buy in Bulk</TabsTrigger>
             </TabsList>
 
             <TabsContent value="retail" className="mt-5">
-              <div className="flex flex-wrap gap-2">
+              <p className="text-muted-foreground mb-2 text-[11px] font-semibold tracking-[0.14em] uppercase">
+                Pack size
+              </p>
+              <div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(120px,1fr))]">
                 {retailVariants.map((v) => (
                   <button
                     key={v.size}
@@ -178,18 +180,23 @@ function ProductPage() {
                      * Only when sold out. An unconditional label would replace each in-stock
                      * button's accessible name — "1kg₹1,099" — with a hand-written copy of it.
                      */
-                    aria-label={v.soldOut ? `${v.size} ${inr(v.price)} — sold out` : undefined}
+                    aria-label={
+                      v.soldOut ? `${v.size} ${inr(v.price)} — sold out` : `${v.size}${inr(v.price)}`
+                    }
                     onClick={() => setSizeInput(v.size)}
                     className={cn(
-                      "rounded-xl border px-4 py-2 text-sm transition-colors",
+                      "flex flex-col items-start border-[1.5px] px-3 py-3 text-left transition-colors",
                       v.size === variant.size
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border hover:border-primary/50",
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-foreground hover:bg-sand",
                       v.soldOut && "cursor-not-allowed line-through opacity-50",
                     )}
                   >
-                    <span className="font-semibold">{v.size}</span>
-                    <span className="ml-2 opacity-80">{inr(v.price)}</span>
+                    <span className="text-[13px] font-bold">{v.size}</span>
+                    <span className="text-[12px]">{inr(v.price)}</span>
+                    <span className="text-[10px] opacity-70" aria-hidden="true">
+                      {inr(pricePerKg(v.price, v.grams))}/kg
+                    </span>
                   </button>
                 ))}
               </div>
@@ -203,20 +210,19 @@ function ProductPage() {
                 Inclusive of all taxes · GST invoice available
               </p>
 
-              <div className="mt-5 flex items-center gap-3">
-                <span className="text-muted-foreground text-sm">Quantity</span>
-                <div className="border-border flex items-center rounded-xl border">
+              <div className="mt-5 flex flex-wrap items-stretch gap-3">
+                <div className="border-foreground flex items-center border-[1.5px]">
                   <button
-                    className="grid size-9 place-items-center disabled:opacity-50"
+                    className="grid place-items-center px-[18px] py-[15px] disabled:opacity-50"
                     aria-label="Decrease quantity"
                     disabled={variant.soldOut}
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
                   >
                     <Minus className="size-4" />
                   </button>
-                  <span className="w-8 text-center text-sm font-semibold">{qty}</span>
+                  <span className="min-w-8 text-center text-sm font-semibold">{qty}</span>
                   <button
-                    className="grid size-9 place-items-center disabled:opacity-50"
+                    className="grid place-items-center px-[18px] py-[15px] disabled:opacity-50"
                     aria-label="Increase quantity"
                     disabled={variant.soldOut}
                     onClick={() => setQty((q) => q + 1)}
@@ -224,18 +230,9 @@ function ProductPage() {
                     <Plus className="size-4" />
                   </button>
                 </div>
-                <span className="ml-auto text-sm font-semibold">{inr(variant.price * qty)}</span>
-              </div>
-
-              {/*
-               * Both guarded on the *selected* variant, not on `product.soldOut`: every retail pack
-               * can be out while a 25kg bulk pack keeps the product in stock, and these two buttons
-               * only ever add a retail pack.
-               */}
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                 <Button
                   size="lg"
-                  className="flex-1"
+                  className="min-w-[220px] flex-1"
                   disabled={variant.soldOut}
                   onClick={() => {
                     void addRetail(product.slug, variant.size, variant.grams, qty);
@@ -246,7 +243,7 @@ function ProductPage() {
                 </Button>
                 <Button
                   size="lg"
-                  variant="secondary"
+                  variant="outline"
                   className="flex-1"
                   disabled={variant.soldOut}
                   onClick={() => {
@@ -286,7 +283,7 @@ function ProductPage() {
                 >
                   <Minus className="size-4" />
                 </Button>
-                <div className="border-border min-w-24 rounded-xl border px-5 py-2 text-center font-semibold">
+                <div className="border-foreground min-w-24 border-[1.5px] px-5 py-[15px] text-center font-semibold">
                   {kg} kg
                 </div>
                 <Button
@@ -343,6 +340,31 @@ function ProductPage() {
           )}
 
           <PincodeChecker orderValue={variant.price * qty} />
+          <p className="text-data mt-3 text-[12px]">
+            {variant.price * qty >= settings.freeShippingThreshold
+              ? "Free shipping applied"
+              : `Add ${inr(Math.max(0, settings.freeShippingThreshold - variant.price * qty))} more for free shipping`}
+            {settings.codEnabled ? " · Cash on delivery available" : ""}
+          </p>
+
+          <dl className="border-border mt-8 border-t">
+            {[
+              ["Grade", product.grade],
+              ["Origin", product.origin],
+              ["Processing", product.processing],
+              ["Shelf life", product.shelfLife],
+              ["Storage", product.storage],
+              ["Ingredients", product.ingredients],
+              ["HSN / GST", `${product.hsn} / ${product.gstRate}%`],
+            ].map(([k, v]) => (
+              <div key={k} className="border-border grid grid-cols-[130px_minmax(0,1fr)] border-b py-3">
+                <dt className="text-muted-foreground text-[11px] font-semibold tracking-[0.1em] uppercase">
+                  {k}
+                </dt>
+                <dd className="text-[13px]">{v}</dd>
+              </div>
+            ))}
+          </dl>
 
           <Accordion type="single" collapsible className="mt-8">
             <AccordionItem value="spec">
@@ -386,7 +408,7 @@ function ProductPage() {
       </div>
 
       <section className="mt-20">
-        <h2 className="font-display text-3xl">Customer reviews</h2>
+        <h2 className="heading-shout">Customer reviews</h2>
         <div className="mt-6">
           <ReviewList
             reviews={reviews}
@@ -401,13 +423,13 @@ function ProductPage() {
       </section>
 
       <section className="mt-20">
-        <h2 className="font-display text-3xl">You may also like</h2>
+        <h2 className="heading-shout">You may also like</h2>
         <div className="mt-6">
           {related === undefined ? (
             <ProductGridSkeleton count={4} />
           ) : (
             related.items.length > 0 && (
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
+              <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
                 {related.items.map((p) => (
                   <ProductCard key={p.slug} product={p} />
                 ))}

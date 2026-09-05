@@ -9,7 +9,7 @@ export function MobileTabBar() {
   const item = "flex flex-1 flex-col items-center gap-1 py-2 text-[11px] text-muted-foreground";
 
   return (
-    <nav className="border-border bg-background/95 fixed inset-x-0 bottom-0 z-40 flex border-t backdrop-blur md:hidden">
+    <nav className="border-border bg-background fixed inset-x-0 bottom-0 z-40 flex border-t md:hidden">
       <Link to="/" className={item} activeProps={{ className: `${item} text-foreground` }}>
         <Home className="size-5" />
         Home
@@ -18,8 +18,6 @@ export function MobileTabBar() {
         <Package className="size-5" />
         Shop
       </Link>
-      {/* Brief §22 and §40 — the Search tab opens the same instant-search dialog the
-          header does, rather than sending the visitor to the shop page to find a field. */}
       <button type="button" className={item} onClick={() => setSearchOpen(true)}>
         <Search className="size-5" />
         Search
@@ -36,7 +34,7 @@ export function MobileTabBar() {
         <span className="relative">
           <ShoppingBag className="size-5" />
           {count > 0 && (
-            <span className="bg-primary text-primary-foreground absolute -top-1.5 -right-2 grid size-4 place-items-center rounded-full text-[10px] font-bold">
+            <span className="bg-foreground text-background absolute -top-1.5 -right-2 grid size-4 place-items-center text-[10px] font-bold">
               {count}
             </span>
           )}

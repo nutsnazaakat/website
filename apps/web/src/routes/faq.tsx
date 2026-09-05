@@ -99,7 +99,6 @@ function Faq() {
     title: `Frequently Asked Questions | ${settings.brandName}`,
     description:
       "Ordering, pack sizes, shipping times, free-shipping threshold, bulk slab pricing, minimum order quantities, samples and the returns window — answered.",
-    // Brief §39: FAQPage structured data is the standard fit for this page.
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -114,27 +113,27 @@ function Faq() {
   });
 
   return (
-    <div className="container-page py-14">
-      <div className="max-w-2xl">
-        <h1 className="font-display text-5xl leading-[1.05]">Frequently asked questions</h1>
-        <p className="text-muted-foreground mt-4">
+    <div className="container-page py-12 pb-[72px]">
+      <div className="max-w-[640px]">
+        <h1 className="page-h1">Frequently asked questions</h1>
+        <p className="text-body mt-4 text-[16px]">
           {questionCount} answers covering ordering, shipping, bulk supply and returns. If yours is
           not here, the contact form reaches us directly.
         </p>
       </div>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+      <div className="mt-10 grid items-start gap-10 max-md:grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <div className="space-y-10">
           {groups.map((g) => (
             <section key={g.title}>
-              <h2 className="font-display text-3xl">{g.title}</h2>
+              <h2 className="heading-shout text-[20px]">{g.title}</h2>
               <Accordion type="single" collapsible className="mt-3">
                 {g.items.map((item) => (
                   <AccordionItem key={item.q} value={item.q}>
-                    <AccordionTrigger className="text-left">{item.q}</AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground text-sm leading-relaxed">
-                      {item.a}
-                    </AccordionContent>
+                    <AccordionTrigger className="py-4 text-[15px] font-semibold">
+                      {item.q}
+                    </AccordionTrigger>
+                    <AccordionContent>{item.a}</AccordionContent>
                   </AccordionItem>
                 ))}
               </Accordion>
@@ -142,8 +141,8 @@ function Faq() {
           ))}
         </div>
 
-        <aside className="space-y-5 lg:sticky lg:top-28 lg:self-start">
-          <div className="border-border bg-sand rounded-2xl border p-6">
+        <aside className="space-y-5 md:sticky md:top-24 md:self-start">
+          <div className="border-border bg-sand border p-6">
             <p className="font-display text-xl">Still stuck?</p>
             <p className="text-muted-foreground mt-2 text-sm">
               Send us the order ID and what went wrong. We reply within one working day.
@@ -152,29 +151,23 @@ function Faq() {
               <Link to="/contact">Contact us</Link>
             </Button>
           </div>
-          <div className="border-border rounded-2xl border p-6">
-            <p className="font-semibold">Related pages</p>
-            <ul className="mt-3 space-y-2 text-sm">
-              <li>
-                <Link to="/shipping" className="underline underline-offset-4">
-                  Shipping policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/returns" className="underline underline-offset-4">
-                  Returns &amp; refunds
-                </Link>
-              </li>
-              <li>
-                <Link to="/bulk-orders" className="underline underline-offset-4">
-                  Bulk &amp; wholesale
-                </Link>
-              </li>
-              <li>
-                <Link to="/quality" className="underline underline-offset-4">
-                  Quality &amp; sourcing
-                </Link>
-              </li>
+          <div className="border-border border">
+            <p className="px-6 pt-5 text-[11px] font-semibold tracking-[0.14em] uppercase">
+              Related pages
+            </p>
+            <ul className="mt-2 text-[13px]">
+              {[
+                { to: "/shipping" as const, label: "Shipping policy" },
+                { to: "/returns" as const, label: "Returns & refunds" },
+                { to: "/bulk-orders" as const, label: "Bulk & wholesale" },
+                { to: "/quality" as const, label: "Quality & sourcing" },
+              ].map((item) => (
+                <li key={item.to} className="border-border border-t">
+                  <Link to={item.to} className="block px-6 py-3">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </aside>

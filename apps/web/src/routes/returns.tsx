@@ -10,6 +10,7 @@ function Returns() {
       updated="15 August 2026"
       intro="What can be returned, what cannot, how long you have and how a refund is issued."
       metaDescription="The seven-day window for damaged, incorrect or short-supplied items, what cannot be returned on food-safety grounds, and how refunds are processed."
+      tabs="returns"
       sections={[
         {
           heading: "What we replace or refund",

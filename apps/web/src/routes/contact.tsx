@@ -27,7 +27,7 @@ export const Route = createFileRoute("/contact")({ component: Contact });
 
 /** Matches the native selects in the checkout, RFQ and gifting forms. */
 const SELECT_CLASS =
-  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+  "flex h-10 w-full border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
 function Contact() {
   const submitMessage = useSubmitContactMessage();
@@ -83,20 +83,21 @@ function Contact() {
   };
 
   return (
-    <div className="container-page py-14">
-      <div className="max-w-2xl">
-        <h1 className="font-display text-5xl leading-[1.05]">Talk to us</h1>
-        <p className="text-muted-foreground mt-4">
+    <div className="container-page py-14 pb-[72px]">
+      <div className="max-w-[620px]">
+        <p className="kicker mb-5">Contact</p>
+        <h1 className="page-h1">Talk to us</h1>
+        <p className="text-body mt-4 text-[16px]">
           Order questions, delivery chasers, wholesale enquiries and gifting briefs all land in the
           same place. We reply within one working day.
         </p>
       </div>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+      <div className="mt-10 grid gap-9 [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]">
         <div>
           {created ? (
-            <div role="status" className="border-border bg-card shadow-soft rounded-2xl border p-8">
-              <CheckCircle2 className="text-leaf size-10" aria-hidden="true" />
+            <div role="status" className="border-border bg-card border p-8">
+              <CheckCircle2 className="text-gold size-10" aria-hidden="true" />
               <h2 className="font-display mt-4 text-3xl">Message received</h2>
               <p className="text-muted-foreground mt-3 text-sm">
                 Thanks — we have it. We reply to every message within one working day, to the email
@@ -120,14 +121,17 @@ function Contact() {
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 aria-label="Contact form"
-                className="border-border bg-card shadow-soft rounded-2xl border p-6 sm:p-8"
+                className="border-border bg-card border p-6 sm:p-[clamp(24px,3vw,36px)]"
               >
-                <h2 className="font-display text-3xl">Send a message</h2>
+                <p className="text-muted-foreground text-[11px] font-semibold tracking-[0.14em] uppercase">
+                  Send a message
+                </p>
+                <h2 className="sr-only">Send a message</h2>
 
                 {submitError && (
                   <p
                     role="alert"
-                    className="border-destructive/40 bg-destructive/10 text-destructive mt-4 flex gap-2 rounded-xl border px-4 py-3 text-sm"
+                    className="border-destructive/40 bg-destructive/10 text-destructive mt-4 flex gap-2 border px-4 py-3 text-sm"
                   >
                     <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
                     {submitError}
@@ -248,10 +252,30 @@ function Contact() {
           )}
         </div>
 
-        <aside className="space-y-5">
+        <aside className="space-y-4">
+          {[
+            {
+              title: "Retail orders",
+              body: "Pack sizes, delivery, an order already placed — include the order ID if you have one.",
+            },
+            {
+              title: "Bulk & wholesale",
+              body: "Slab rates, samples and GST invoicing. For a numbered quote, use the bulk request form.",
+            },
+            {
+              title: "Gifting",
+              body: "Box counts, branding and dates. The gifting page files a trackable request.",
+            },
+          ].map((card) => (
+            <div key={card.title} className="border-border bg-card border p-5">
+              <p className="text-[13px] font-bold">{card.title}</p>
+              <p className="text-body mt-1.5 text-[13px] leading-[1.6]">{card.body}</p>
+            </div>
+          ))}
+
           <ContactDetails />
 
-          <div className="border-border bg-sand rounded-2xl border p-6">
+          <div className="border-border bg-sand border p-6">
             <p className="font-display text-xl">Faster routes</p>
             <ul className="mt-3 space-y-2 text-sm">
               <li>

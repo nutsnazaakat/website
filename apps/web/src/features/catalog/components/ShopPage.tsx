@@ -152,6 +152,8 @@ export function ShopPage() {
 
   const activeCategory = search.category ?? "all";
   const activeFilterCount = Object.values(filterValue).filter((v) => v !== undefined).length;
+  const categoryCounts = new Map((facets?.categories ?? []).map((c) => [c.slug, c.productCount]));
+  const allCount = (facets?.categories ?? []).reduce((n, c) => n + c.productCount, 0);
 
   /**
    * A real `href` for each page link, built by the router rather than by hand.
@@ -177,88 +179,122 @@ export function ShopPage() {
     />
   );
 
+  const categoryRows = [
+    { slug: "all", name: "All products", count: allCount || total },
+    ...(categories ?? []).map((c) => ({
+      slug: c.slug,
+      name: c.name,
+      count: categoryCounts.get(c.slug) ?? 0,
+    })),
+  ];
+
   return (
-    <div className="container-page py-10">
-      <h1 className="font-display text-4xl">Shop dry fruits</h1>
-      <p className="text-muted-foreground mt-3 max-w-2xl text-sm">
-        Graded kernels, honest pricing and pack sizes that match how you actually eat. Buying more
-        than 5kg? Switch to bulk for per-kg pricing.
-      </p>
+    <div className="container-page py-9 pb-[72px]">
+      <nav className="text-muted-foreground text-[11px] font-semibold tracking-[0.14em] uppercase">
+        <Link to="/">Home</Link>
+        {" / "}
+        <span className="text-foreground">Shop</span>
+      </nav>
 
-      <div className="mt-8 flex flex-wrap items-center gap-3">
-        <Input
-          ref={inputRef}
-          value={qInput}
-          onChange={(e) => setQInput(e.target.value)}
-          placeholder="Search almonds, premium kaju, 1kg badam…"
-          aria-label="Search products"
-          className="max-w-xs"
-        />
+      <div className="border-border mt-5 border-b pb-6">
+        <h1 className="page-h1">Shop dry fruits</h1>
+        <p className="text-body mt-3 max-w-[560px] text-[15px]">
+          Graded kernels, honest pricing and pack sizes that match how you actually eat. Buying more
+          than 5kg? Switch to bulk for per-kg pricing.
+        </p>
+      </div>
 
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline" className="md:hidden">
-              <SlidersHorizontal className="mr-2 size-4" />
-              Filters
-              {activeFilterCount > 0 && ` (${activeFilterCount})`}
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-80 overflow-y-auto p-6">
-            <SheetHeader className="sr-only">
-              <SheetTitle>Filters</SheetTitle>
-            </SheetHeader>
-            <div className="mt-6">{filterPanel}</div>
-          </SheetContent>
-        </Sheet>
-
-        <Select
-          value={search.sort ?? "featured"}
-          onValueChange={(v) => setFilter({ sort: v as ProductSort })}
-        >
-          <SelectTrigger className="w-52" aria-label="Sort products">
-            <SelectValue placeholder="Sort" />
-          </SelectTrigger>
-          <SelectContent>
-            {sortOptions.map((s) => (
-              <SelectItem key={s.value} value={s.value}>
-                {s.label}
-              </SelectItem>
+      <div className="mt-8 grid items-start gap-9 max-md:grid-cols-1 md:grid-cols-[210px_minmax(0,1fr)]">
+        <aside className="md:sticky md:top-24">
+          <p className="border-foreground mb-3 border-b-[1.5px] pb-2 text-[11px] font-semibold tracking-[0.14em] uppercase">
+            Category
+          </p>
+          <ul>
+            {categoryRows.map((c) => (
+              <li key={c.slug}>
+                <button
+                  type="button"
+                  aria-label={c.slug === "all" ? "All" : c.name}
+                  onClick={() => setFilter({ category: c.slug === "all" ? undefined : c.slug })}
+                  className={cn(
+                    "flex w-full items-center justify-between py-2 text-left text-[13px]",
+                    activeCategory === c.slug ? "text-gold font-bold" : "hover:text-gold",
+                  )}
+                >
+                  <span>{c.slug === "all" ? "All products" : c.name}</span>
+                  <span className="text-[#b3a896] text-[12px]" aria-hidden="true">
+                    {c.count}
+                  </span>
+                </button>
+              </li>
             ))}
-          </SelectContent>
-        </Select>
-
-        {/* The envelope's `total`, not the page length: the page holds 24 and the shop has 27. */}
-        <span className="text-muted-foreground ml-auto text-sm">{total} products</span>
-      </div>
-
-      <div className="mt-5 flex gap-2 overflow-x-auto pb-2">
-        {[{ slug: "all", name: "All" }, ...(categories ?? [])].map((c) => (
-          <button
-            key={c.slug}
-            onClick={() => setFilter({ category: c.slug === "all" ? undefined : c.slug })}
-            className={cn(
-              "rounded-full border px-4 py-1.5 text-sm whitespace-nowrap transition-colors",
-              activeCategory === c.slug
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border hover:border-primary/50",
-            )}
-          >
-            {c.name}
-          </button>
-        ))}
-      </div>
-
-      <div className="mt-8 gap-10 md:grid md:grid-cols-[220px_1fr]">
-        <aside className="hidden md:block">
-          <div className="sticky top-24">{filterPanel}</div>
+          </ul>
+          <div className="border-border bg-sand mt-6 border p-[18px]">
+            <p className="text-[13px] font-bold">Need more than a kilo?</p>
+            <p className="text-muted-foreground mt-1.5 text-[12px] leading-[1.5]">
+              Per-kg slab pricing starts at 1 kg with GST invoicing.
+            </p>
+            <Link to="/bulk-orders" className="section-link mt-3 inline-block hover:text-foreground">
+              Bulk pricing
+            </Link>
+          </div>
+          <div className="mt-8 hidden md:block">{filterPanel}</div>
         </aside>
 
         <div>
+          <div className="mb-[18px] flex flex-wrap items-center gap-3">
+            <Input
+              ref={inputRef}
+              value={qInput}
+              onChange={(e) => setQInput(e.target.value)}
+              placeholder="Search almonds, premium kaju, 1kg badam…"
+              aria-label="Search products"
+              className="max-w-xs"
+            />
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="md:hidden">
+                  <SlidersHorizontal className="mr-2 size-4" />
+                  Filters
+                  {activeFilterCount > 0 && ` (${activeFilterCount})`}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80 overflow-y-auto p-6">
+                <SheetHeader className="sr-only">
+                  <SheetTitle>Filters</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6">{filterPanel}</div>
+              </SheetContent>
+            </Sheet>
+
+            <span className="text-muted-foreground text-[12px]">
+              Showing {items.length} of {total} products
+            </span>
+            <span className="text-muted-foreground ml-auto text-[12px]">{total} products</span>
+
+            <Select
+              value={search.sort ?? "featured"}
+              onValueChange={(v) => setFilter({ sort: v as ProductSort })}
+            >
+              <SelectTrigger className="w-52" aria-label="Sort products">
+                <SelectValue placeholder="Sort" />
+              </SelectTrigger>
+              <SelectContent>
+                {sortOptions.map((s) => (
+                  <SelectItem key={s.value} value={s.value}>
+                    {s.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {isLoading ? (
             <ProductGridSkeleton />
           ) : items.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
+              <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
                 {items.map((p) => (
                   <ProductCard key={p.slug} product={p} />
                 ))}

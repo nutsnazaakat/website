@@ -1,5 +1,6 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
+import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { MobileTabBar } from "@/components/layout/MobileTabBar";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -19,6 +20,7 @@ function RootLayout() {
     // AppProviders needing to know about it.
     <SearchProvider>
       <div className="flex min-h-dvh flex-col">
+        <AnnouncementBar />
         <SiteHeader />
         <main className="flex-1 pb-16 md:pb-0">
           <Outlet />

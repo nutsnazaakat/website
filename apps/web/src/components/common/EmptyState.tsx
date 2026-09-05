@@ -9,7 +9,7 @@ interface EmptyStateProps {
 
 export function EmptyState({ title, body, action, icon }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 px-8 py-20 text-center">
+    <div className="border-border bg-card flex flex-col items-center justify-center gap-4 border px-8 py-14 text-center">
       {icon && <div className="text-muted-foreground">{icon}</div>}
       <p className="font-display text-2xl">{title}</p>
       {body && <p className="text-muted-foreground max-w-sm text-sm">{body}</p>}

@@ -15,12 +15,16 @@ export function TierTable({ tiers, kg }: TierTableProps) {
 
   return (
     <div>
-      <div className="border-border overflow-hidden rounded-xl border">
+      <div className="border-border border">
+        <div className="bg-sand text-muted-foreground grid grid-cols-2 px-4 py-2.5 text-[11px] font-bold tracking-[0.1em] uppercase">
+          <span>Quantity</span>
+          <span className="text-right">Rate per kg</span>
+        </div>
         {tiers.map((t) => (
           <div
             key={t.minKg}
             className={cn(
-              "border-border flex items-center justify-between border-b px-4 py-2.5 text-sm last:border-0",
+              "border-sand flex items-center justify-between border-t px-4 py-2.5 text-sm",
               t === tier && "bg-sand font-semibold",
             )}
           >
@@ -28,13 +32,15 @@ export function TierTable({ tiers, kg }: TierTableProps) {
               {t.minKg}
               {t.maxKg ? `–${t.maxKg}` : "+"} kg
             </span>
-            <span>{t.pricePerKg ? `${inr(t.pricePerKg)} / kg` : "Custom quote"}</span>
+            <span className={cn("text-right font-bold", !t.pricePerKg && "text-gold")}>
+              {t.pricePerKg ? `${inr(t.pricePerKg)} / kg` : "On request"}
+            </span>
           </div>
         ))}
       </div>
 
       {savings > 0 && (
-        <p className="text-leaf mt-3 text-sm font-semibold">You save {inr(savings)}</p>
+        <p className="text-gold mt-3 text-sm font-semibold">You save {inr(savings)}</p>
       )}
     </div>
   );

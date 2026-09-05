@@ -12,6 +12,7 @@ function Shipping() {
       updated="15 August 2026"
       intro="How orders are packed, when they leave us, what delivery costs and what happens when something goes wrong in transit."
       metaDescription="Dispatch timelines, delivery estimates, shipping charges, the free-shipping threshold and what to do if a consignment is damaged or delayed."
+      tabs="shipping"
       sections={[
         {
           heading: "Dispatch",

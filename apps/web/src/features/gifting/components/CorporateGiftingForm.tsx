@@ -29,7 +29,7 @@ import {
 
 /** Matches the native selects in the checkout and RFQ forms. */
 const SELECT_CLASS =
-  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+  "flex h-10 w-full border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
 /**
  * Brief §24. Number of boxes, budget per box, branding, delivery date and a custom
@@ -77,14 +77,14 @@ export function CorporateGiftingForm() {
 
   if (created) {
     return (
-      <div className="border-border bg-card shadow-soft rounded-3xl border p-8 text-center">
-        <CheckCircle2 className="text-leaf mx-auto size-10" />
+      <div className="border-border bg-card border p-8 text-center text-foreground">
+        <CheckCircle2 className="text-gold mx-auto size-10" />
         <h2 className="font-display mt-4 text-3xl">Quote Request Submitted</h2>
         <p className="text-muted-foreground mx-auto mt-3 max-w-md text-sm">
           Our gifting desk replies with box options, branding mockups and a dispatch plan. Quote
           this number in any follow-up.
         </p>
-        <p className="bg-sand mt-6 rounded-2xl px-6 py-4 text-2xl font-bold tracking-wide">
+        <p className="bg-sand mt-6 px-6 py-4 text-2xl font-bold tracking-wide">
           {created.id}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -106,7 +106,7 @@ export function CorporateGiftingForm() {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         aria-label="Corporate gifting enquiry"
-        className="border-border bg-card shadow-soft rounded-3xl border p-6 sm:p-8"
+        className="border-border bg-card border p-6 text-foreground sm:p-8"
       >
         <h2 className="font-display text-3xl">Corporate gifting enquiry</h2>
         <p className="text-muted-foreground mt-2 text-sm">
@@ -354,7 +354,7 @@ export function CorporateGiftingForm() {
         </div>
 
         {indicativeValue > 0 && (
-          <p className="bg-sand mt-6 rounded-2xl px-4 py-3 text-sm">
+          <p className="bg-sand mt-6 px-4 py-3 text-sm">
             Indicative order value <span className="font-semibold">{inr(indicativeValue)}</span>{" "}
             <span className="text-muted-foreground">
               ({boxes} boxes at your stated budget, before GST and branding)
@@ -362,7 +362,7 @@ export function CorporateGiftingForm() {
           </p>
         )}
 
-        <Button type="submit" size="lg" className="mt-6" disabled={submitting}>
+          <Button type="submit" size="lg" className="mt-6" disabled={submitting} variant="gold">
           {submitting ? (
             <>
               <Loader2 className="mr-2 size-4 animate-spin" /> Submitting…

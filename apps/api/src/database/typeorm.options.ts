@@ -2,6 +2,8 @@ import type { DataSourceOptions } from 'typeorm';
 import type { AppConfiguration } from '../common/config/app.config';
 
 export function buildTypeOrmOptions(app: AppConfiguration): DataSourceOptions {
+  const neonHost = app.database.host.includes('.neon.tech');
+
   return {
     type: 'postgres',
     host: app.database.host,
@@ -10,6 +12,8 @@ export function buildTypeOrmOptions(app: AppConfiguration): DataSourceOptions {
     password: app.database.password,
     database: app.database.database,
     schema: app.database.schema,
+    // Neon refuses plaintext; local Docker does not speak TLS.
+    ssl: neonHost ? { rejectUnauthorized: true } : false,
     // Entities and migrations are globbed from dist at runtime and from src under ts-node.
     entities: [`${__dirname}/../entities/**/*.entity.{ts,js}`],
     migrations: [`${__dirname}/migrations/*.{ts,js}`],

@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { PackageCheck } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/features/cart/CartProvider";
@@ -15,37 +14,29 @@ export function ComboCard({ combo }: { combo: Combo }) {
   const { addRetail } = useCart();
 
   return (
-    <li className="border-border bg-card shadow-soft hover:shadow-lift flex flex-col overflow-hidden rounded-3xl border transition-shadow">
-      <div className="bg-sand relative">
-        <img
-          src={combo.image}
-          alt={`${combo.name} — ${combo.components.map((c) => c.name).join(", ")}`}
-          loading="lazy"
-          width={800}
-          height={600}
-          className="aspect-[4/3] w-full object-cover"
-        />
-        <span className="bg-background/90 absolute top-4 left-4 rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.14em] uppercase">
+    <li className="border-border bg-card flex flex-col border">
+      <div className="border-border flex items-baseline justify-between gap-3 border-b px-[22px] py-[18px]">
+        <span className="text-gold text-[10px] font-bold tracking-[0.16em] uppercase">
           {combo.occasion}
         </span>
         {combo.savings > 0 && (
-          <span className="bg-leaf text-primary-foreground absolute top-4 right-4 rounded-full px-3 py-1 text-[11px] font-bold">
-            {combo.savingsPercent}% off MRP
-          </span>
+          <span className="text-[11px] font-semibold">You save {inr(combo.savings)}</span>
         )}
       </div>
 
-      <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-display text-2xl">{combo.name}</h3>
-        <p className="text-muted-foreground mt-2 text-sm">{combo.blurb}</p>
+      <div className="flex flex-1 flex-col p-[22px]">
+        <h3 className="font-display text-[26px] leading-[1.1]">{combo.name}</h3>
+        <p className="text-body mt-2 text-[14px] leading-[1.6]">{combo.blurb}</p>
 
-        <p className="text-muted-foreground mt-5 text-xs font-semibold tracking-[0.16em] uppercase">
-          What&apos;s inside · {combo.totalGrams / 1000} kg
+        <p className="text-muted-foreground mt-5 text-[10px] font-semibold tracking-[0.16em] uppercase">
+          Inside the box
         </p>
-        <ul aria-label={`Products in ${combo.name}`} className="mt-3 space-y-2 text-sm">
+        <ul aria-label={`Products in ${combo.name}`} className="mt-2 text-[13px]">
           {combo.components.map((c) => (
-            <li key={`${c.slug}-${c.size}`} className="flex items-baseline gap-2">
-              <PackageCheck className="text-leaf size-4 shrink-0 translate-y-0.5" />
+            <li
+              key={`${c.slug}-${c.size}`}
+              className="border-sand flex items-baseline justify-between gap-3 border-b py-2 last:border-0"
+            >
               <Link
                 to="/product/$slug"
                 params={{ slug: c.slug }}
@@ -53,35 +44,22 @@ export function ComboCard({ combo }: { combo: Combo }) {
               >
                 {c.name}
               </Link>
-              <span className="text-muted-foreground">{c.size}</span>
-              <span className="text-muted-foreground ml-auto shrink-0 line-through">
-                {inr(c.mrp)}
+              <span className="text-muted-foreground shrink-0">
+                {c.size} · {inr(c.price)}
               </span>
             </li>
           ))}
         </ul>
+      </div>
 
-        <dl className="bg-sand mt-5 rounded-2xl p-4 text-sm">
-          <div className="flex items-baseline justify-between">
-            <dt className="text-muted-foreground">MRP of the parts</dt>
-            <dd className="line-through">{inr(combo.partsMrp)}</dd>
-          </div>
-          <div className="mt-1 flex items-baseline justify-between">
-            <dt className="text-muted-foreground">Bought separately</dt>
-            <dd>{inr(combo.partsPrice)}</dd>
-          </div>
-          <div className="border-border/70 mt-2 flex items-baseline justify-between border-t pt-2">
-            <dt className="font-semibold">Combo price</dt>
-            <dd className="font-display text-2xl">{inr(combo.price)}</dd>
-          </div>
-          {combo.savings > 0 && (
-            <p className="text-leaf mt-2 font-semibold">You save {inr(combo.savings)}</p>
-          )}
-        </dl>
-
-        <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+      <div className="border-border mt-auto flex flex-wrap items-center gap-3 border-t px-[22px] py-4">
+        <div>
+          <p className="text-[20px] font-bold">{inr(combo.price)}</p>
+          <p className="text-placeholder text-[12px] line-through">{inr(combo.partsMrp)}</p>
+        </div>
+        <div className="ml-auto flex flex-wrap gap-2">
           <Button
-            className="flex-1"
+            size="sm"
             onClick={() => {
               void addRetail(combo.slug, "1kg", combo.totalGrams);
               toast.success(`${combo.name} added to cart`);
@@ -89,9 +67,9 @@ export function ComboCard({ combo }: { combo: Combo }) {
           >
             Add to Cart
           </Button>
-          <Button asChild variant="outline" className="flex-1">
+          <Button asChild size="sm" variant="outline">
             <Link to="/product/$slug" params={{ slug: combo.slug }}>
-              View details
+              View box
             </Link>
           </Button>
         </div>

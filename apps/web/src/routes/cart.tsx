@@ -1,10 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
+import { ArrowRight, ShieldCheck, ShoppingBag } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ProductGridSkeleton } from "@/components/common/ProductGridSkeleton";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import { settings } from "@/config/settings";
 import { CartError } from "@/features/cart/components/CartError";
 import { CartLineRow } from "@/features/cart/components/CartLineRow";
@@ -40,7 +38,6 @@ function CartPage() {
   const { data: related } = useRelated(lines[0]?.slug ?? "");
 
   const gap = Math.max(0, settings.freeShippingThreshold - totals.subtotal);
-  const progress = Math.min(100, (totals.subtotal / settings.freeShippingThreshold) * 100);
   const suggestions = (related?.items ?? []).filter((p) => !lines.some((l) => l.slug === p.slug));
 
   /**
@@ -56,7 +53,7 @@ function CartPage() {
   if (cartLoading && lines.length === 0) {
     return (
       <div className="container-page py-10">
-        <h1 className="font-display text-4xl">Your Cart</h1>
+        <h1 className="page-h1">Your Cart</h1>
         <div className="mt-8" role="status" aria-busy="true" aria-label="Loading your cart">
           <ProductGridSkeleton count={2} />
         </div>
@@ -67,7 +64,7 @@ function CartPage() {
   if (lines.length === 0) {
     return (
       <div className="container-page py-10">
-        <h1 className="font-display text-4xl">Your Cart</h1>
+        <h1 className="page-h1">Your Cart</h1>
         <CartError error={error} onRetry={reload} />
         <EmptyState
           title="Your cart is waiting for something delicious."
@@ -85,15 +82,15 @@ function CartPage() {
 
   return (
     <div className="container-page py-10">
-      <h1 className="font-display text-4xl">Your Cart</h1>
+      <h1 className="page-h1">Your Cart</h1>
       <p className="text-muted-foreground mt-2 text-sm">
         {count} {count === 1 ? "item" : "items"} in your cart
       </p>
       <CartError error={error} onRetry={reload} />
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="mt-8 grid items-start gap-8 max-md:grid-cols-1 md:grid-cols-[minmax(0,1.7fr)_minmax(280px,1fr)]">
         <section aria-label="Cart items">
-          <div className="border-border rounded-2xl border px-5">
+          <div className="border-border bg-card border">
             {isLoading && products.length === 0 ? (
               <div className="py-10">
                 <ProductGridSkeleton count={2} />
@@ -128,9 +125,12 @@ function CartPage() {
           </Link>
         </section>
 
-        <aside aria-label="Order summary">
-          <div className="border-border rounded-2xl border p-5 lg:sticky lg:top-24">
-            <h2 className="font-display text-2xl">Order Summary</h2>
+        <aside aria-label="Order summary" className="md:sticky md:top-24 md:self-start">
+          <div className="border-border bg-sand border p-5">
+            <p className="text-muted-foreground text-[11px] font-semibold tracking-[0.14em] uppercase">
+              Order summary
+            </p>
+            <h2 className="sr-only">Order Summary</h2>
 
             <div className="mt-4 space-y-2.5 text-sm">
               <div className="flex justify-between">
@@ -149,7 +149,7 @@ function CartPage() {
               </div>
             </div>
 
-            <Separator className="my-4" />
+            <div className="border-sand my-4 border-t" />
 
             <div className="flex items-baseline justify-between">
               <span className="font-semibold">Total</span>
@@ -169,17 +169,14 @@ function CartPage() {
               )
             )}
 
-            <div className="bg-accent mt-5 rounded-xl px-4 py-3">
+            <div className="border-sand mt-5 border-t pt-4">
               {gap > 0 ? (
-                <p className="text-accent-foreground text-sm">
-                  Add {inr(gap)} more to unlock free shipping.
-                </p>
+                <p className="text-[12px]">Add {inr(gap)} more to unlock free shipping.</p>
               ) : (
-                <p className="text-accent-foreground flex items-center gap-2 text-sm font-medium">
-                  <Truck className="size-4" /> Free shipping unlocked.
+                <p className="text-[12px]">
+                  Free shipping applied. Dispatched within one working day.
                 </p>
               )}
-              <Progress value={progress} className="mt-2.5 h-1.5" />
             </div>
 
             <Button asChild size="lg" className="mt-5 w-full">
@@ -196,7 +193,13 @@ function CartPage() {
               </Button>
             )}
 
-            <p className="text-muted-foreground mt-4 flex items-center justify-center gap-2 text-xs">
+            <p className="text-muted-foreground mt-4 text-center text-[11px]">
+              {settings.codEnabled ? "Cash on delivery available. " : ""}
+              {settings.onlinePaymentEnabled
+                ? "Online payment is available at checkout."
+                : "Online payment opens once the gateway is live."}
+            </p>
+            <p className="text-muted-foreground mt-2 flex items-center justify-center gap-2 text-[11px]">
               <ShieldCheck className="size-3.5" /> GST invoice issued on every order
             </p>
           </div>

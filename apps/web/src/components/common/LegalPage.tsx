@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle } from "lucide-react";
+import { PolicyTabs } from "@/components/common/PolicyTabs";
 import { settings } from "@/config/settings";
 import { useSeo } from "@/hooks/useSeo";
 
@@ -16,6 +17,7 @@ interface LegalPageProps {
   updated: string;
   sections: LegalSection[];
   metaDescription: string;
+  tabs?: "shipping" | "returns";
 }
 
 /**
@@ -30,7 +32,14 @@ interface LegalPageProps {
  * These pages are `noindex` for the same reason: a draft policy indexed by a search
  * engine is a draft policy being quoted back at you.
  */
-export function LegalPage({ title, intro, updated, sections, metaDescription }: LegalPageProps) {
+export function LegalPage({
+  title,
+  intro,
+  updated,
+  sections,
+  metaDescription,
+  tabs,
+}: LegalPageProps) {
   useSeo({
     title: `${title} | ${settings.brandName}`,
     description: metaDescription,
@@ -38,17 +47,17 @@ export function LegalPage({ title, intro, updated, sections, metaDescription }: 
   });
 
   return (
-    <div className="container-page py-14">
-      <article className="mx-auto max-w-3xl">
-        <h1 className="font-display text-5xl leading-[1.05]">{title}</h1>
-        <p className="text-muted-foreground mt-4">{intro}</p>
-        <p className="text-muted-foreground mt-3 text-sm">Last updated: {updated}</p>
+    <div className="container-page py-14 pb-[72px]">
+      <article className="max-w-[680px]">
+        {tabs && <PolicyTabs active={tabs} />}
+        <h1 className="font-display text-[clamp(32px,4.2vw,54px)] leading-[1.05]">{title}</h1>
+        <p className="text-muted-foreground mt-4 text-[11px] font-semibold tracking-[0.14em] uppercase">
+          Last updated: {updated}
+        </p>
+        <p className="text-body mt-4 text-[16px] leading-[1.7]">{intro}</p>
 
-        <div
-          role="note"
-          className="border-border bg-sand mt-8 flex items-start gap-3 rounded-2xl border border-dashed p-5"
-        >
-          <AlertTriangle className="text-leaf mt-0.5 size-5 shrink-0" aria-hidden="true" />
+        <div role="note" className="border-border bg-sand mt-8 flex items-start gap-3 border p-5">
+          <AlertTriangle className="text-gold mt-0.5 size-5 shrink-0" aria-hidden="true" />
           <div className="text-sm">
             <p className="font-semibold">Draft — to be reviewed before launch</p>
             <p className="text-muted-foreground mt-1">
@@ -59,21 +68,21 @@ export function LegalPage({ title, intro, updated, sections, metaDescription }: 
           </div>
         </div>
 
-        <div className="mt-10 space-y-9">
+        <div className="mt-4">
           {sections.map((s) => (
-            <section key={s.heading}>
-              <h2 className="font-display text-2xl">{s.heading}</h2>
-              <div className="text-foreground/85 mt-3 space-y-4 text-[15px] leading-relaxed">
+            <section key={s.heading} className="border-border border-t py-[26px]">
+              <h2 className="heading-shout text-[17px]">{s.heading}</h2>
+              <div className="text-body mt-3 space-y-4 text-[15px] leading-[1.75]">
                 {s.body.map((block, i) =>
                   Array.isArray(block) ? (
-                    <ul key={`${s.heading}-${i}`} className="space-y-2">
+                    <ul key={`${s.heading}-${i}`} className="space-y-0">
                       {block.map((item) => (
-                        <li key={item} className="flex items-start gap-2.5">
-                          <span
-                            aria-hidden="true"
-                            className="bg-leaf mt-2 size-1.5 shrink-0 rounded-full"
-                          />
-                          <span>{item}</span>
+                        <li
+                          key={item}
+                          className="border-gold-light py-2 pl-4 text-[14px] leading-[1.6]"
+                          style={{ borderLeftWidth: 2 }}
+                        >
+                          {item}
                         </li>
                       ))}
                     </ul>
@@ -86,7 +95,7 @@ export function LegalPage({ title, intro, updated, sections, metaDescription }: 
           ))}
         </div>
 
-        <nav aria-label="Other policies" className="border-border mt-12 border-t pt-6 text-sm">
+        <nav aria-label="Other policies" className="border-border mt-8 border-t pt-6 text-sm">
           <p className="font-semibold">Other policies</p>
           <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
             <li>

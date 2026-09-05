@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { PageBand } from "@/components/common/PageBand";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { settings } from "@/config/settings";
@@ -20,43 +20,24 @@ function Combos() {
 
   return (
     <div>
-      <section className="border-border bg-sand border-b">
-        <div className="container-page py-16">
-          <p className="text-muted-foreground text-xs font-semibold tracking-[0.2em] uppercase">
-            Combos
-          </p>
-          <h1 className="font-display mt-3 max-w-3xl text-5xl leading-[1.05]">
-            One box. Four packs. One price that beats buying them apart.
-          </h1>
-          <p className="text-muted-foreground mt-4 max-w-2xl">
-            Each combo is built from the same packs you can buy on their own, so the saving is
-            arithmetic rather than a claim. Every card shows the MRP of the parts, what they cost
-            separately, and what the box costs.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Button asChild size="lg" variant="outline">
-              <Link to="/shop" search={{ category: "combos" }}>
-                Browse all combo products
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="ghost">
-              <Link to="/gifting">
-                Gifting boxes <ArrowRight className="ml-1 size-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <PageBand
+        kicker="Combos"
+        title="Four packs, one box, one price."
+        intro="Each combo is built from the same packs you can buy on their own, so the saving is arithmetic rather than a claim. Every card shows the MRP of the parts, what they cost separately, and what the box costs."
+      />
 
       <section className="container-page py-16">
         {isLoading || combos === undefined ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
             {Array.from({ length: 6 }, (_, i) => (
-              <Skeleton key={i} className="h-[560px] w-full rounded-3xl" />
+              <Skeleton key={i} className="h-[420px] w-full" />
             ))}
           </div>
         ) : (
-          <ul aria-label="Combo boxes" className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <ul
+            aria-label="Combo boxes"
+            className="grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+          >
             {combos.map((c) => (
               <ComboCard key={c.slug} combo={c} />
             ))}
@@ -65,9 +46,11 @@ function Combos() {
       </section>
 
       <section className="container-page pb-20">
-        <div className="border-border bg-card shadow-soft rounded-3xl border p-8">
-          <h2 className="font-display text-3xl">Need a combo built to your own spec?</h2>
-          <p className="text-muted-foreground mt-2 max-w-2xl text-sm">
+        <div className="border-border bg-card border p-8">
+          <h2 className="font-display text-[clamp(28px,3.2vw,42px)]">
+            Need a combo built to your own spec?
+          </h2>
+          <p className="text-body mt-2 max-w-2xl text-[15px]">
             Offices, resellers and event planners order assortments we do not stock as standard.
             Tell us the contents, pack sizes and volume and we will quote the box.
           </p>

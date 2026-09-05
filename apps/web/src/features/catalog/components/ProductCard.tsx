@@ -2,13 +2,13 @@ import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { CatalogMedia } from "@/components/common/CatalogMedia";
 import { Price } from "@/components/common/Price";
-import { Rating } from "@/components/common/Rating";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/features/cart/CartProvider";
 import { useWishlist } from "@/features/wishlist/WishlistProvider";
-import { inr, pricePer100g } from "@/lib/format";
+import { inr, pricePerKg } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { openingRetailSize } from "../selection";
 import type { Product } from "../types";
@@ -33,7 +33,7 @@ export function ProductCard({ product }: { product: Product }) {
   const variant = retailVariants.find((v) => v.size === size) ?? retailVariants[0]!;
 
   return (
-    <article className="group border-border bg-card shadow-soft hover:shadow-lift relative flex flex-col overflow-hidden rounded-2xl border transition-all duration-300 hover:-translate-y-1">
+    <article className="border-border bg-card relative flex flex-col border">
       <button
         type="button"
         aria-pressed={wished}
@@ -41,26 +41,19 @@ export function ProductCard({ product }: { product: Product }) {
           wished ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`
         }
         onClick={() => void toggle(product.slug)}
-        className="bg-background/90 text-foreground shadow-soft hover:bg-background absolute top-3 right-3 z-10 grid size-8 place-items-center rounded-full transition-colors"
+        className="border-border bg-card text-foreground hover:bg-sand absolute top-2.5 right-2.5 z-10 grid size-8 place-items-center border"
       >
-        <Heart className={cn("size-4", wished && "fill-primary text-primary")} />
+        <Heart className={cn("size-4", wished && "fill-foreground text-foreground")} />
       </button>
 
       <Link
         to="/product/$slug"
         params={{ slug: product.slug }}
-        className="bg-sand relative block overflow-hidden"
+        className="relative block overflow-hidden"
       >
-        <img
-          src={product.images[0]}
-          alt={product.name}
-          loading="lazy"
-          width={800}
-          height={800}
-          className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+        <CatalogMedia src={product.images[0]} alt={product.name} />
         {product.badge && (
-          <span className="bg-background/90 text-foreground absolute top-3 left-3 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-[0.12em]">
+          <span className="bg-foreground text-gold-light absolute top-2.5 left-2.5 z-[2] px-2 py-[5px] text-[9px] font-bold tracking-[0.16em] uppercase">
             {product.badge}
           </span>
         )}
@@ -68,19 +61,20 @@ export function ProductCard({ product }: { product: Product }) {
         {product.soldOut && (
           <Badge
             variant="destructive"
-            className="absolute bottom-3 left-3 rounded-full text-[10px] tracking-[0.12em]"
+            className="absolute bottom-2.5 left-2.5 text-[10px] tracking-[0.12em]"
           >
             SOLD OUT
           </Badge>
         )}
       </Link>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="border-border flex flex-1 flex-col border-t px-4 pt-[15px] pb-[18px]">
         <Link to="/product/$slug" params={{ slug: product.slug }}>
-          <h3 className="line-clamp-1 font-semibold">{product.name}</h3>
+          <h3 className="line-clamp-1 text-[13px] font-bold">{product.name}</h3>
         </Link>
-        <p className="text-muted-foreground mt-1 line-clamp-1 text-sm">{product.subtitle}</p>
-        <Rating value={product.rating} count={product.reviewCount} className="mt-2 text-xs" />
+        <p className="text-muted-foreground mt-1 line-clamp-1 text-[11px] leading-[1.45]">
+          {product.subtitle}
+        </p>
 
         <div className="mt-3 flex flex-wrap gap-1.5">
           {retailVariants.map((v) => (
@@ -96,10 +90,10 @@ export function ProductCard({ product }: { product: Product }) {
               aria-label={v.soldOut ? `${v.size} — sold out` : undefined}
               onClick={() => setSize(v.size)}
               className={cn(
-                "rounded-full border px-2.5 py-1 text-xs transition-colors",
+                "border px-2.5 py-1 text-[11px] font-semibold tracking-[0.06em] uppercase transition-colors",
                 v.size === variant.size
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border hover:border-primary/50",
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border hover:border-foreground",
                 v.soldOut && "cursor-not-allowed line-through opacity-50",
               )}
             >
@@ -108,9 +102,9 @@ export function ProductCard({ product }: { product: Product }) {
           ))}
         </div>
 
-        <Price price={variant.price} mrp={variant.mrp} className="mt-3" />
-        <p className="text-muted-foreground mt-1 text-xs">
-          {inr(pricePer100g(variant.price, variant.grams))} / 100g
+        <Price price={variant.price} mrp={variant.mrp} size="sm" className="mt-3" />
+        <p className="text-muted-foreground mt-[5px] text-[11px]">
+          {variant.size} pack · {inr(pricePerKg(variant.price, variant.grams))}/kg
         </p>
 
         {/*
@@ -120,7 +114,7 @@ export function ProductCard({ product }: { product: Product }) {
          */}
         <Button
           className="mt-4 w-full"
-          variant="secondary"
+          size="sm"
           disabled={variant.soldOut}
           onClick={() => {
             void addRetail(product.slug, variant.size, variant.grams);

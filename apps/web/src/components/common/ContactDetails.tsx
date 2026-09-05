@@ -37,23 +37,24 @@ export function ContactDetails() {
 
   if (rows.length === 0 && !hasAddress && !hasSocial) {
     return (
-      <div className="border-border bg-sand rounded-2xl border border-dashed p-6">
-        <p className="font-semibold">Contact details coming soon</p>
+      <div className="border-border bg-sand border p-6">
+        <p className="text-[13px] font-bold">Phone, WhatsApp and certifications</p>
         <p className="text-muted-foreground mt-2 text-sm">
           Our phone, email and WhatsApp lines are being set up. The form on this page reaches us in
           the meantime, and we reply to every message.
         </p>
+        <p className="sr-only">Contact details coming soon</p>
       </div>
     );
   }
 
   return (
-    <div className="border-border bg-card shadow-soft rounded-2xl border p-6">
+    <div className="border-border bg-card border p-6">
       <p className="font-display text-2xl">Reach us directly</p>
       <ul className="mt-4 space-y-3 text-sm">
         {rows.map((r) => (
           <li key={r.key} className="flex items-start gap-3">
-            <r.icon className="text-leaf mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <r.icon className="text-gold mt-0.5 size-4 shrink-0" aria-hidden="true" />
             <span>
               <span className="text-muted-foreground block">{r.label}</span>
               <a href={r.href} className="underline underline-offset-4">
@@ -64,7 +65,7 @@ export function ContactDetails() {
         ))}
         {hasAddress && (
           <li className="flex items-start gap-3">
-            <MapPin className="text-leaf mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <MapPin className="text-gold mt-0.5 size-4 shrink-0" aria-hidden="true" />
             <span>
               <span className="text-muted-foreground block">Address</span>
               <address className="not-italic">

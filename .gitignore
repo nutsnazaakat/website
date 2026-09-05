@@ -58,3 +58,4 @@ e2e/playwright-report/
 nutwala-client/
 nutwala-admin/
 nutwala-backend/
+.neon
