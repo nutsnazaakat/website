@@ -1,0 +1,38 @@
+{
+  "name": "nutwala",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "apps/web",
+    "apps/admin",
+    "apps/api",
+    "packages/shared"
+  ],
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepare": "npm run build -w @nutwala/shared",
+    "build": "npm run build -w @nutwala/shared && npm run build -w @nutwala/api && npm run build -w @nutwala/web && npm run build -w @nutwala/admin",
+    "dev": "npm run build -w @nutwala/shared && concurrently -n shared,api,web,admin -c gray,blue,green,magenta --kill-others-on-fail \"npm run dev -w @nutwala/shared\" \"npm run dev -w @nutwala/api\" \"npm run dev -w @nutwala/web\" \"npm run dev -w @nutwala/admin\"",
+    "dev:api": "npm run dev -w @nutwala/api",
+    "dev:web": "npm run dev -w @nutwala/web",
+    "dev:admin": "npm run dev -w @nutwala/admin",
+    "test": "npm run test -w @nutwala/shared && npm run test -w @nutwala/api && npm run test -w @nutwala/web && npm run test -w @nutwala/admin",
+    "test:integration": "npm run test:integration -w @nutwala/api",
+    "lint": "npm run lint -w @nutwala/api && npm run lint -w @nutwala/web && npm run lint -w @nutwala/admin",
+    "typecheck": "npm run typecheck -w @nutwala/api && npm run typecheck -w @nutwala/web && npm run typecheck -w @nutwala/admin",
+    "db:up": "docker compose up -d postgres postgres-test",
+    "db:down": "docker compose down",
+    "migration:run": "npm run migration:run -w @nutwala/api",
+    "migration:revert": "npm run migration:revert -w @nutwala/api",
+    "seed": "npm run seed -w @nutwala/api",
+    "test:e2e": "playwright test --config e2e/playwright.config.ts",
+    "test:e2e:report": "playwright show-report e2e/playwright-report",
+    "typecheck:e2e": "tsc --noEmit -p e2e/tsconfig.json"
+  }
+}

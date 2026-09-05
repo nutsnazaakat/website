@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: nutwala-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nutwala
+      POSTGRES_USER: nutwala
+      POSTGRES_PASSWORD: nutwala_dev_only
+    ports:
+      - '127.0.0.1:5442:5432'
+    volumes:
+      - nutwala-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nutwala -d nutwala']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-test:
+    image: postgres:15-alpine
+    container_name: nutwala-postgres-test
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nutwala_test
+      POSTGRES_USER: nutwala
+      POSTGRES_PASSWORD: nutwala_dev_only
+    ports:
+      - '127.0.0.1:5443:5432'
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nutwala -d nutwala_test']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  nutwala-pgdata:

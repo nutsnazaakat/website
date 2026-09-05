@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023", "DOM"],
+    "module": "esnext",
+    "types": ["vite/client"],
+    "allowArbitraryExtensions": true,
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    /*
+     * `strict` was ABSENT from the scaffold and is added here. `nutwala-client`'s own
+     * `tsconfig.app.json` sets it, so this was a scaffold defect rather than a decision, and it is
+     * not a cosmetic one: without `strictNullChecks` every `| null` in the vendored contract —
+     * `customer.userId`, `paymentCollectedAt`, `OrderLine.total` — is erased, and without
+     * `noImplicitAny` an inferred `any` spreads silently while a repo-wide ban on the *word* `any`
+     * still appears to hold.
+     */
+    "strict": true,
+    /*
+     * Not in the storefront's config, added deliberately. This app reads arrays straight off API
+     * responses and indexes them — `channelSplit[0]`, `shipments[0]`, `salesOverTime[i]` — and an
+     * empty array from a quiet day is an ordinary answer here, not an edge case. Without this flag
+     * `shipments[0]` is typed `AdminShipment` and the guard that would have caught the empty case
+     * is a comparison TypeScript rejects as impossible.
+     */
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path aliases — `@/contract` is packages/shared/src; `@` is this app's src. */
+    "paths": {
+      "@/contract": ["../../packages/shared/src/index.ts"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"]
+}

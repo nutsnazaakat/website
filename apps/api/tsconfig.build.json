@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Emit-only: keeps dist flat (dist/main.js, not dist/src/main.js).
+    "rootDir": "./src",
+    // MUST stay false. nest-cli sets deleteOutDir, which wipes dist before each build; an
+    // incremental build then reads tsconfig.build.tsbuildinfo, concludes everything is already
+    // up to date, and emits nothing — leaving an empty dist and exiting 0. Every build after
+    // the first would silently produce a deployable artifact containing no code.
+    "incremental": false
+  },
+  "exclude": ["node_modules", "dist", "test", "**/*.spec.ts"]
+}

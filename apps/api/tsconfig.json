@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "outDir": "./dist",
+    // No `rootDir` here on purpose. This config is what `tsc --noEmit` and eslint read, and it
+    // includes `test/**/*`, which sits above `./src` — tsc rejects an included file above its
+    // rootDir (TS6059) even when not emitting. `rootDir` lives in tsconfig.build.json, which
+    // excludes `test` and is the only config that actually emits.
+    "baseUrl": "./src",
+    "paths": { "@/*": ["*"] },
+    "declaration": false,
+    "sourceMap": true,
+    "incremental": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    // A deliberate divergence from cug, NOT a mirror of it. cug leaves this on (inherited from
+    // `strict`) and writes `!` on every @Column field instead. We take the global carve-out
+    // because ~33 entities plus DTOs are coming and per-field `!` is mechanical boilerplate.
+    // The cost is real and worth knowing: this weakens the check for every hand-written class,
+    // not just entities. Note the driver is TypeORM columns and class-validator DTO fields —
+    // plain fields with no initialiser — NOT constructor injection: `constructor(private readonly
+    // x: Foo) {}` is treated as initialised either way, flag or no flag.
+    "strictPropertyInitialization": false,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*", "test/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

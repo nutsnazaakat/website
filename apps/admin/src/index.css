@@ -1,0 +1,187 @@
+@import "tailwindcss" source(none);
+@source "../src";
+
+/**
+ * The operator console's design system.
+ *
+ * **The palette is the storefront's, verbatim** — the same ivory/charcoal/walnut/leaf/gold tokens
+ * from `nutwala-client/src/styles/index.css`, so the two applications are recognisably one product
+ * and a token changed there can be carried here by copying values rather than re-deriving them.
+ *
+ * **The typography, density and shape are not.** The storefront is editorial: 0.875rem radii,
+ * soft shadows, a Fraunces display face, reveal-on-scroll. This is a tool someone stares at for a
+ * six-hour shift, so:
+ *
+ * - **13px base, 1.45 line-height.** More rows on screen without shrinking the hit targets.
+ * - **`--radius: 0.375rem`.** Crisp panels, not rounded cards. At 9 dashboard cards and a 24-row
+ *   table, generous corners read as clutter.
+ * - **Borders, not shadows.** `--shadow-*` is deliberately absent. Elevation is the storefront's
+ *   way of separating a product card from a photograph; here everything is flat data and a hairline
+ *   is enough. Nine shadowed cards in a grid is noise with no information in it.
+ * - **Tabular numerals everywhere money or a count appears** (`.tnum`). The single highest-value
+ *   typographic decision in a table-first tool: ₹1,04,572 above ₹9,84,010 only reads as a
+ *   comparison when the digits are in the same columns.
+ * - **No Fraunces, no reveal animation.** The serif and the entrance animation are brand register;
+ *   an operator re-reading the order list forty times a day does not want either.
+ * - **Manrope is kept**, because it is the storefront's face and brief §2 names it.
+ *
+ * Dark mode is inherited from the storefront's `.dark` block and driven by `prefers-color-scheme`
+ * as well as the class, since a warehouse shift is not always in daylight and nothing in this app
+ * offers a theme toggle to reach the class with.
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-leaf: var(--leaf);
+  --color-leaf-foreground: var(--leaf-foreground);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-sand: var(--sand);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+:root {
+  --radius: 0.375rem;
+  --background: oklch(0.978 0.008 85);
+  --foreground: oklch(0.235 0.014 55);
+  --card: oklch(0.995 0.004 90);
+  --card-foreground: oklch(0.235 0.014 55);
+  --primary: oklch(0.395 0.058 48);
+  --primary-foreground: oklch(0.985 0.008 85);
+  --secondary: oklch(0.945 0.016 85);
+  --secondary-foreground: oklch(0.31 0.03 55);
+  --muted: oklch(0.948 0.012 85);
+  --muted-foreground: oklch(0.525 0.02 62);
+  --accent: oklch(0.93 0.03 100);
+  --accent-foreground: oklch(0.31 0.04 60);
+  --destructive: oklch(0.55 0.19 27);
+  --destructive-foreground: oklch(0.985 0.008 85);
+  --border: oklch(0.905 0.012 80);
+  --input: oklch(0.905 0.012 80);
+  --ring: oklch(0.55 0.05 50);
+  --leaf: oklch(0.485 0.06 148);
+  --leaf-foreground: oklch(0.985 0.008 85);
+  --gold: oklch(0.79 0.09 82);
+  --gold-foreground: oklch(0.28 0.04 60);
+  --sand: oklch(0.955 0.018 82);
+  --chart-1: oklch(0.55 0.09 50);
+  --chart-2: oklch(0.6 0.07 148);
+  --chart-3: oklch(0.75 0.1 82);
+  --chart-4: oklch(0.45 0.05 60);
+  --chart-5: oklch(0.68 0.06 30);
+  --sidebar: oklch(0.955 0.012 82);
+  --sidebar-foreground: oklch(0.235 0.014 55);
+  --sidebar-accent: oklch(0.915 0.024 90);
+  --sidebar-accent-foreground: oklch(0.28 0.04 55);
+  --sidebar-border: oklch(0.895 0.014 80);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.18 0.012 60);
+    --foreground: oklch(0.955 0.01 85);
+    --card: oklch(0.225 0.015 60);
+    --card-foreground: oklch(0.955 0.01 85);
+    --primary: oklch(0.86 0.05 82);
+    --primary-foreground: oklch(0.24 0.03 55);
+    --secondary: oklch(0.28 0.018 60);
+    --secondary-foreground: oklch(0.955 0.01 85);
+    --muted: oklch(0.28 0.018 60);
+    --muted-foreground: oklch(0.72 0.02 70);
+    --accent: oklch(0.32 0.03 70);
+    --accent-foreground: oklch(0.955 0.01 85);
+    --destructive: oklch(0.65 0.18 25);
+    --destructive-foreground: oklch(0.98 0.01 85);
+    --border: oklch(1 0 0 / 12%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.6 0.04 60);
+    --leaf: oklch(0.66 0.08 148);
+    --leaf-foreground: oklch(0.18 0.012 60);
+    --gold: oklch(0.8 0.09 82);
+    --gold-foreground: oklch(0.22 0.03 60);
+    --sand: oklch(0.26 0.018 70);
+    --chart-1: oklch(0.72 0.08 50);
+    --chart-2: oklch(0.7 0.08 148);
+    --chart-3: oklch(0.82 0.1 82);
+    --chart-4: oklch(0.62 0.05 60);
+    --chart-5: oklch(0.72 0.07 30);
+    --sidebar: oklch(0.21 0.014 60);
+    --sidebar-foreground: oklch(0.955 0.01 85);
+    --sidebar-accent: oklch(0.3 0.024 65);
+    --sidebar-accent-foreground: oklch(0.965 0.01 85);
+    --sidebar-border: oklch(1 0 0 / 10%);
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    font-size: 13px;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.015em;
+    font-weight: 600;
+  }
+
+  /**
+   * Focus is never invisible here. An operator filling a filter bar with the keyboard is the
+   * expected way to use this app, not an accessibility afterthought.
+   */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+/** Digits that line up in a column. Applied to every money figure, count and order number. */
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}

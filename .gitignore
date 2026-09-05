@@ -1,0 +1,60 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# build output
+dist/
+build/
+.output/
+.vite/
+dist-ssr
+*.tsbuildinfo
+
+# env / secrets — never commit a working env file
+.env
+.env.local
+.env.*.local
+.env.*
+!.env.example
+*.local
+
+# logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# test / coverage
+coverage/
+.nyc_output/
+test-results/
+
+# Playwright
+e2e/.auth/
+e2e/test-results/
+e2e/playwright-report/
+
+# cache
+.cache/
+.temp/
+
+# leftover sibling-repo checkouts (pre-monorepo). Safe to delete.
+nutwala-client/
+nutwala-admin/
+nutwala-backend/
