@@ -1,3 +1,4 @@
+import { catalogApi } from "@/features/catalog/api";
 /**
  * Route-level smoke tests: real router, real route components, real API seam.
  *
@@ -16,7 +17,7 @@ import { cleanup, render, screen, waitFor, within } from "@testing-library/react
 import userEvent from "@testing-library/user-event";
 import { addDays, format } from "date-fns";
 import { ORDER_NUMBER_PATTERN, type BusinessProfile, type RfqDetail } from "@/contract";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { settings } from "@/config/settings";
 import { accountKeys } from "@/features/account/hooks/useAccount";
 import { AuthProvider } from "@/features/auth/AuthProvider";
@@ -236,6 +237,24 @@ const cartItems = () => within(screen.getByRole("region", { name: "Cart items" }
 const cartSummary = () => within(screen.getByRole("complementary", { name: "Order summary" }));
 
 describe("route smoke", () => {
+  it("shows a catalogue failure and retries to real product cards", async () => {
+    const request = vi
+      .spyOn(catalogApi, "listProducts")
+      .mockRejectedValue(new Error("API unavailable"));
+    try {
+      await renderAt("/shop");
+      await screen.findByRole("alert");
+      expect(screen.queryByText("Nothing matches these filters.")).toBeNull();
+      expect(screen.queryByText("Showing 0 of 0 products")).toBeNull();
+      request.mockRestore();
+      await userEvent.click(screen.getByRole("button", { name: "Retry loading products" }));
+      await screen.findByText("W320 Cashews");
+      expect(screen.queryByText("We couldn’t load the products.")).toBeNull();
+    } finally {
+      request.mockRestore();
+    }
+  });
+
   it("renders the home route with bestsellers and page meta", async () => {
     await renderAt("/");
     await screen.findByText(/A little nazaakat/, {}, { timeout: 5000 });
