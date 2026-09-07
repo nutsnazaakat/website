@@ -1,5 +1,6 @@
+import { ConfigService } from '@nestjs/config';
 // backend/src/modules/notifications/notifications.service.ts
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import type { EntityManager } from 'typeorm';
 import { NotificationChannel, NotificationStatus } from '../../entities/enums';
 import { Notification } from '../../entities/ops/notification.entity';
@@ -35,7 +36,10 @@ export interface QueueInput {
  */
 @Injectable()
 export class NotificationsService {
-  constructor(@Inject(NOTIFICATION_DRIVER) private readonly driver: NotificationDriver) {}
+  constructor(
+    @Inject(NOTIFICATION_DRIVER) private readonly driver: NotificationDriver,
+    @Optional() private readonly config?: ConfigService,
+  ) {}
 
   async queue(manager: EntityManager, input: QueueInput): Promise<void> {
     const notification = await manager.getRepository(Notification).save({
@@ -47,6 +51,9 @@ export class NotificationsService {
       sentAt: null,
       error: null,
     });
+
+    // Production never treats a development log as email delivery.
+    if (this.config?.get('app.isProduction') || this.config?.get('app.email.apiKey')) return;
 
     let result: { sentAt: Date } | { error: string };
     try {

@@ -1,3 +1,6 @@
+import { ConfigService } from '@nestjs/config';
+import { Optional } from '@nestjs/common';
+import { orderAccessToken } from './order-access';
 import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseInterceptors } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -62,6 +65,7 @@ export class CheckoutController {
      */
     private readonly pincodes: PincodeService,
     @InjectRepository(Order) private readonly orders: Repository<Order>,
+    @Optional() private readonly config?: ConfigService,
   ) {}
 
   /**
@@ -158,14 +162,24 @@ export class CheckoutController {
   @Post('orders')
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(CheckoutIdempotencyInterceptor)
-  @ApiOperation({ summary: 'Place a COD order from the current basket' })
+  @ApiOperation({ summary: 'Place an order from the current basket' })
   async place(
     @OptionalUser() user: AuthenticatedUser | undefined,
     @Req() request: Request,
     @Body() dto: PlaceOrderDto,
   ): Promise<AccountOrder> {
     const placed = await this.checkout.place(this.owner(user, request), dto, user);
-    return toAccountOrder(await this.reload(placed));
+    return {
+      ...toAccountOrder(await this.reload(placed)),
+      ...(this.config
+        ? {
+            checkoutToken: orderAccessToken(
+              placed,
+              this.config.getOrThrow<string>('app.auth.jwtSecret'),
+            ),
+          }
+        : {}),
+    };
   }
 
   /**

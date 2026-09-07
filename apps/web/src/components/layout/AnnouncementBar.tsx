@@ -1,7 +1,8 @@
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { inr } from "@/lib/format";
 
 export function AnnouncementBar() {
+  const settings = useSiteSettings();
   return (
     <div className="bg-foreground text-background flex flex-wrap items-center justify-center gap-[14px] px-5 py-[9px] text-[11px] font-semibold tracking-[0.2em] uppercase">
       <span>Small packs for home · Bulk supply for business</span>

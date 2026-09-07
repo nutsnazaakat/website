@@ -13,7 +13,7 @@ export function buildTypeOrmOptions(app: AppConfiguration): DataSourceOptions {
     database: app.database.database,
     schema: app.database.schema,
     // Neon refuses plaintext; local Docker does not speak TLS.
-    ssl: neonHost ? { rejectUnauthorized: true } : false,
+    ssl: neonHost || app.database.ssl ? { rejectUnauthorized: true } : false,
     // Entities and migrations are globbed from dist at runtime and from src under ts-node.
     entities: [`${__dirname}/../entities/**/*.entity.{ts,js}`],
     migrations: [`${__dirname}/migrations/*.{ts,js}`],

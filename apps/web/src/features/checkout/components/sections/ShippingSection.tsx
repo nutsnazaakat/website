@@ -1,6 +1,6 @@
 import { addDays, format } from "date-fns";
 import { Truck } from "lucide-react";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { inr } from "@/lib/format";
 import type { CheckoutFormState } from "../../hooks/useCheckoutForm";
 import { Section } from "./Section";
@@ -11,6 +11,7 @@ export function ShippingSection({
   shipping,
   step,
 }: Pick<CheckoutFormState, "delivery" | "serviceable" | "shipping"> & { step: number }) {
+  const settings = useSiteSettings();
   return (
     <Section title="Shipping" step={step} className="lg:col-start-1">
       <div className="border-border flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3">

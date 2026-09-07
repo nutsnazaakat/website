@@ -1,3 +1,4 @@
+import { PaymentsModule } from './modules/payments/payments.module';
 import {
   HttpException,
   HttpStatus,
@@ -228,6 +229,7 @@ export const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
     CartModule,
     CatalogModule,
     CheckoutModule,
+    PaymentsModule,
     ContentModule,
     CouponsModule,
     InventoryModule,
@@ -336,7 +338,14 @@ export class AppModule implements NestModule {
         RequestTrackingMiddleware,
         cookieParser(),
         CsrfBootstrapMiddleware,
-        preservingStatus(json({ limit: BODY_LIMIT })),
+        preservingStatus(
+          json({
+            limit: BODY_LIMIT,
+            verify: (req, _res, body) => {
+              (req as typeof req & { paymentRawBody?: Buffer }).paymentRawBody = Buffer.from(body);
+            },
+          }),
+        ),
         preservingStatus(urlencoded({ extended: true, limit: BODY_LIMIT })),
       )
       // `'/{*path}'` and not `'*'`: both match every path under the prefix, but `'*'` is

@@ -1,3 +1,4 @@
+import { settings } from "@/config/settings";
 import type { AuthUser, RegisterInput } from "@/contract";
 import { handleAccountRequest, resetAccountStub } from "./account-api.stub";
 import { handleBusinessRequest, resetBusinessStub } from "./business-api.stub";
@@ -149,6 +150,8 @@ export function installAuthStub(options: AuthStubOptions = {}): () => void {
   globalThis.fetch = ((input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
     const url = urlOf(input);
     const method = (init?.method ?? "GET").toUpperCase();
+
+    if (url === "/api/v1/settings" && method === "GET") return Promise.resolve(ok({ ...settings }));
 
     if (!url.startsWith(PREFIX)) {
       // The catalogue, review, cart, wishlist, checkout and account seams also call `fetch` now, and

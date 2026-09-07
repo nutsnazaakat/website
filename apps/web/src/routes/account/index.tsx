@@ -4,7 +4,7 @@ import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useAddresses, useOrders } from "@/features/account/hooks/useAccount";
 import { OrdersTable, OrdersTableSkeleton } from "@/features/account/components/OrdersTable";
 import { useAuth } from "@/features/auth/AuthProvider";
@@ -98,6 +98,7 @@ function UpgradeToBusinessCard() {
 }
 
 function AccountOverview() {
+  const settings = useSiteSettings();
   const { upgrade } = Route.useSearch();
   const { user, role } = useAuth();
 

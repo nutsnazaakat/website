@@ -1,5 +1,5 @@
 import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 
 /**
  * Every channel here is admin-configurable and empty by default. The brief forbids
@@ -8,6 +8,7 @@ import { settings } from "@/config/settings";
  * the page.
  */
 export function ContactDetails() {
+  const settings = useSiteSettings();
   const rows = [
     settings.supportEmail !== "" && {
       key: "email",

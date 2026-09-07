@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { AuthCard, AuthSwitch } from "@/features/auth/components/AuthCard";
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
 import { useSeo } from "@/hooks/useSeo";
@@ -11,6 +11,7 @@ export const Route = createFileRoute("/register")({
 });
 
 function RegisterPage() {
+  const settings = useSiteSettings();
   const { redirect } = Route.useSearch();
 
   useSeo({

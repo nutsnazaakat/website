@@ -4,7 +4,7 @@ import { ProductGridSkeleton } from "@/components/common/ProductGridSkeleton";
 import { CartError } from "@/features/cart/components/CartError";
 import { EmptyState } from "@/components/common/EmptyState";
 import { Button } from "@/components/ui/button";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useCart } from "@/features/cart/CartProvider";
 import { CheckoutForm } from "@/features/checkout/components/CheckoutForm";
 import { useSeo } from "@/hooks/useSeo";
@@ -12,6 +12,7 @@ import { useSeo } from "@/hooks/useSeo";
 export const Route = createFileRoute("/checkout")({ component: CheckoutPage });
 
 function CheckoutPage() {
+  const settings = useSiteSettings();
   useSeo({
     title: `Checkout — ${settings.brandName}`,
     description: "Confirm your delivery details and place your dry fruits order.",

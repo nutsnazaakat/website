@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { PHONE_REGEX } from "@/features/checkout/schema";
 import { useSeo } from "@/hooks/useSeo";
@@ -52,6 +52,7 @@ const contactSchema = z.object({
 type ContactValues = z.infer<typeof contactSchema>;
 
 function AccountProfile() {
+  const settings = useSiteSettings();
   const { user, role, isLoading, upgradeToBusiness } = useAuth();
   const navigate = useNavigate();
   const [enabling, setEnabling] = useState(false);

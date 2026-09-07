@@ -4,7 +4,7 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { cartTotals } from "@/features/cart/cart-math";
 import { useCart } from "@/features/cart/CartProvider";
 import { useProducts, WHOLE_CATALOGUE } from "@/features/catalog/hooks/useCatalog";
@@ -17,6 +17,7 @@ export const Route = createFileRoute("/business/bulk-cart")({ component: BulkCar
 const STEP = 5;
 
 function BulkCart() {
+  const settings = useSiteSettings();
   const { lines, setKg, remove, lineTotalFor } = useCart();
   // Prices and names the bulk lines, so it needs the catalogue rather than a page of it.
   const { data: catalogue, isLoading } = useProducts({ limit: WHOLE_CATALOGUE });

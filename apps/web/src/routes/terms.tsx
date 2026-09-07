@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "@/components/common/LegalPage";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 
 export const Route = createFileRoute("/terms")({ component: Terms });
 
 function Terms() {
+  const settings = useSiteSettings();
   return (
     <LegalPage
       title="Terms of Service"

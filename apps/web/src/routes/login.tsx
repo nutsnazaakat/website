@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { AuthCard, AuthSwitch } from "@/features/auth/components/AuthCard";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 import { useSeo } from "@/hooks/useSeo";
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
+  const settings = useSiteSettings();
   const { redirect } = Route.useSearch();
 
   useSeo({

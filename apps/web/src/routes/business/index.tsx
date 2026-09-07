@@ -3,7 +3,7 @@ import { ClipboardList, FileCheck2, Package, Wallet } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useBusinessStats } from "@/features/business/hooks/useBusiness";
 import { useCart } from "@/features/cart/CartProvider";
 import { RfqStatusBadge } from "@/features/rfq/components/RfqStatusBadge";
@@ -47,6 +47,7 @@ function Tile({
  * vocabulary now gives it, rather than the old page's own `status === 'new'` guess.
  */
 function BusinessDashboard() {
+  const settings = useSiteSettings();
   const { data: rfqs, isLoading: rfqsLoading } = useRfqs();
   const { data: stats, isLoading: statsLoading } = useBusinessStats();
   const { lines, totals } = useCart();

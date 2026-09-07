@@ -5,8 +5,8 @@
  *
  * 1. Static imports hoist above inline statements, so calling `dotenv.config()` in the body
  *    of `main.ts` would run *after* every imported module had already read `process.env`.
- * 2. `override: true` is required because PM2 caches a process's first environment and
- *    re-injects it on `pm2 restart`, so without it an edited `.env` has no effect.
+ * 2. Development dotenv values override stale PM2 values. In production, platform-injected
+ *    configuration wins over any bundled dotenv file.
  *
  * There is deliberately **no `.env.test` file**, and one must not be added. `dotenv.config`
  * against a missing path is a silent no-op, which is exactly what the tests want: unit tests set
@@ -23,9 +23,9 @@ import * as dotenv from 'dotenv';
  * capture lives in its own module rather than in a statement here. See `operator-env.ts` for the
  * measurement that made this necessary.
  */
-import './operator-env';
+import { OPERATOR_NODE_ENV } from './operator-env';
 
 dotenv.config({
   path: path.resolve(process.cwd(), process.env.NODE_ENV === 'test' ? '.env.test' : '.env'),
-  override: true,
+  override: OPERATOR_NODE_ENV !== 'production',
 });

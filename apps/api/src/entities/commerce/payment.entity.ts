@@ -30,4 +30,7 @@ export class Payment extends BaseEntity {
   /** A gateway reference once online payment is enabled; a receipt number for COD. */
   @Column({ type: 'varchar', length: 120, nullable: true })
   reference: string | null;
+  @Index('uq_payments_gateway_order_id', { unique: true })
+  @Column({ name: 'gateway_order_id', type: 'varchar', length: 120, nullable: true })
+  gatewayOrderId: string | null;
 }

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Package } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { Button } from "@/components/ui/button";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { OrdersTable, OrdersTableSkeleton } from "@/features/account/components/OrdersTable";
 import { useOrders } from "@/features/account/hooks/useAccount";
 import { useSeo } from "@/hooks/useSeo";
@@ -15,6 +15,7 @@ import { useSeo } from "@/hooks/useSeo";
 export const Route = createFileRoute("/account/orders/")({ component: AccountOrders });
 
 function AccountOrders() {
+  const settings = useSiteSettings();
   // Whose orders these are is the session's business, not a parameter this page may supply.
   const { data: orders, isLoading } = useOrders();
 

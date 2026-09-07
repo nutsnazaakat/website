@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useSubmitContactMessage } from "@/features/contact/hooks/useContact";
 import { CONTACT_TOPICS, contactSchema, type ContactFormValues } from "@/features/contact/schema";
 import { useSeo } from "@/hooks/useSeo";
@@ -30,6 +30,7 @@ const SELECT_CLASS =
   "flex h-10 w-full border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
 function Contact() {
+  const settings = useSiteSettings();
   const submitMessage = useSubmitContactMessage();
   const [created, setCreated] = useState<SupportTicketSummary | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -93,7 +94,7 @@ function Contact() {
         </p>
       </div>
 
-      <div className="mt-10 grid gap-9 [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]">
+      <div className="mt-10 grid [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))] gap-9">
         <div>
           {created ? (
             <div role="status" className="border-border bg-card border p-8">

@@ -36,11 +36,18 @@ const envSchema = z.object({
    * process restarts.
    */
   DB_MIGRATIONS_RUN: booleanish.default('false'),
+  DB_SSL: booleanish.default('false'),
+  TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(0),
+  RAZORPAY_KEY_ID: z.string().default(''),
+  RAZORPAY_KEY_SECRET: z.string().default(''),
+  RAZORPAY_WEBHOOK_SECRET: z.string().default(''),
+  RESEND_API_KEY: z.string().default(''),
+  EMAIL_FROM: z.string().default(''),
 
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
   ACCESS_TOKEN_TTL: z.string().min(2).default('15m'),
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().positive().default(30),
-  COOKIE_DOMAIN: z.string().min(1).default('localhost'),
+  COOKIE_DOMAIN: z.string().default('localhost'),
   COOKIE_SECURE: booleanish.default('false'),
 
   CORS_ORIGINS: z
@@ -88,6 +95,14 @@ export function loadEnv(
   }
 
   const env = parsed.data;
+  if (Boolean(env.RAZORPAY_KEY_ID) !== Boolean(env.RAZORPAY_KEY_SECRET)) {
+    throw new Error('Set both RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET');
+  }
+  if (env.RAZORPAY_KEY_ID && !env.RAZORPAY_WEBHOOK_SECRET) {
+    throw new Error('RAZORPAY_WEBHOOK_SECRET is required when online payments are configured');
+  }
+  if (env.RESEND_API_KEY && !env.EMAIL_FROM)
+    throw new Error('EMAIL_FROM is required with RESEND_API_KEY');
 
   /**
    * **Unconditional, and deliberately not inside the production branch below.**

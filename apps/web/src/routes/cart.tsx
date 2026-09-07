@@ -3,7 +3,7 @@ import { ArrowRight, ShieldCheck, ShoppingBag } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ProductGridSkeleton } from "@/components/common/ProductGridSkeleton";
 import { Button } from "@/components/ui/button";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { CartError } from "@/features/cart/components/CartError";
 import { CartLineRow } from "@/features/cart/components/CartLineRow";
 import { UnavailableCartLine } from "@/features/cart/components/UnavailableCartLine";
@@ -16,6 +16,7 @@ import { inr } from "@/lib/format";
 export const Route = createFileRoute("/cart")({ component: CartPage });
 
 function CartPage() {
+  const settings = useSiteSettings();
   useSeo({
     title: `Your Cart — ${settings.brandName}`,
     description: "Review your dry fruit selection, check bulk pricing and proceed to checkout.",

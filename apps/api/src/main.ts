@@ -35,18 +35,14 @@ async function bootstrap(): Promise<void> {
 
   const config = app.get(ConfigService);
   const appConfiguration = config.getOrThrow<AppConfiguration>('app');
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .set('trust proxy', appConfiguration.trustProxyHops || false);
 
   // Transient-scoped, so resolve rather than get — same as cug.
   const logger = await app.resolve(WinstonLoggerService);
   app.useLogger(logger.setContext('Bootstrap'));
-
-  // BEFORE FIRST DEPLOYMENT: whatever proxy, load balancer or CDN ends up in front of this
-  // service, `app.set('trust proxy', <hops or predicate matching it>)` must be set to match it.
-  // `ThrottlerGuard` tracks by `req.ip`; behind an untrusted proxy every request reports the
-  // proxy's address, so the global 120/min collapses into one bucket shared by all callers — a
-  // self-inflicted denial of service. It is deliberately NOT set here: with nothing in front,
-  // trusting `X-Forwarded-For` lets any client claim a fresh IP per request and skip throttling
-  // altogether, which is the worse of the two failures.
 
   // Kept here, and mirrored in `test/integration/helpers/test-app.ts`: both are
   // `INestApplication` calls with no middleware form, so neither can move into `AppModule`.
@@ -56,7 +52,13 @@ async function bootstrap(): Promise<void> {
     origin: appConfiguration.cors.origins,
     // Required for the session cookies to be sent at all.
     credentials: true,
-    allowedHeaders: ['Content-Type', 'X-CSRF-Token', 'X-Correlation-Id', 'Idempotency-Key'],
+    allowedHeaders: [
+      'Content-Type',
+      'X-CSRF-Token',
+      'X-Correlation-Id',
+      'Idempotency-Key',
+      'X-Order-Token',
+    ],
     exposedHeaders: ['X-Request-Id', 'X-Correlation-Id'],
   });
 

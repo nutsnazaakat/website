@@ -238,7 +238,7 @@ const cartSummary = () => within(screen.getByRole("complementary", { name: "Orde
 describe("route smoke", () => {
   it("renders the home route with bestsellers and page meta", async () => {
     await renderAt("/");
-    await screen.findByText(/Made Simple/, {}, { timeout: 5000 });
+    await screen.findByText(/A little nazaakat/, {}, { timeout: 5000 });
     await screen.findByText("W320 Cashews", {}, { timeout: 5000 });
     expect(document.title).toContain("Nuts & Nazaakat");
   });
@@ -789,7 +789,7 @@ describe("instant search", () => {
   it("opens from the header, finds a product, and lists categories and popular searches", async () => {
     const user = userEvent.setup();
     await renderAt("/");
-    await screen.findByText(/Made Simple/, {}, { timeout: 5000 });
+    await screen.findByText(/A little nazaakat/, {}, { timeout: 5000 });
 
     expect(screen.queryByRole("dialog")).toBeNull();
     await user.click(screen.getByRole("button", { name: "Search products" }));
@@ -825,7 +825,7 @@ describe("instant search", () => {
   it("shows an empty state for a query that matches nothing", async () => {
     const user = userEvent.setup();
     await renderAt("/");
-    await screen.findByText(/Made Simple/, {}, { timeout: 5000 });
+    await screen.findByText(/A little nazaakat/, {}, { timeout: 5000 });
     await user.click(screen.getByRole("button", { name: "Search products" }));
 
     const dialog = await screen.findByRole("dialog", {}, { timeout: 5000 });
@@ -1394,7 +1394,7 @@ describe("cart and checkout", () => {
 
     expect(await screen.findByText("Enter a valid 10-digit Indian mobile number")).toBeTruthy();
     expect(screen.getByText("Enter a valid 6-digit pincode")).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Order Confirmed!" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Order received" })).toBeNull();
 
     await user.clear(phone);
     await user.type(phone, "9876543210");
@@ -1410,7 +1410,7 @@ describe("cart and checkout", () => {
 
     await user.click(screen.getByRole("button", { name: "Place Order" }));
 
-    await screen.findByRole("heading", { name: "Order Confirmed!", level: 1 }, { timeout: 5000 });
+    await screen.findByRole("heading", { name: "Order received", level: 1 }, { timeout: 5000 });
     const issued = issuedOrders();
     expect(issued.length).toBe(1);
     expect(issued[0]!.id).toMatch(ORDER_NUMBER_PATTERN);
@@ -1481,7 +1481,7 @@ describe("cart and checkout", () => {
 
     await user.click(screen.getByRole("button", { name: "Place Order" }));
 
-    await screen.findByRole("heading", { name: "Order Confirmed!", level: 1 }, { timeout: 5000 });
+    await screen.findByRole("heading", { name: "Order received", level: 1 }, { timeout: 5000 });
     const sent = lastPlacement();
     expect(sent?.companyName).toBe("Anand Sweets");
     // Upper-cased on the way into the input, so this is the GSTIN the invoice will carry.
@@ -1524,7 +1524,7 @@ describe("cart and checkout", () => {
 
     await user.click(screen.getByRole("button", { name: "Place Order" }));
 
-    await screen.findByRole("heading", { name: "Order Confirmed!", level: 1 }, { timeout: 5000 });
+    await screen.findByRole("heading", { name: "Order received", level: 1 }, { timeout: 5000 });
     expect(Object.keys(lastPlacement() ?? {}).sort()).toEqual([
       "companyName",
       "gstin",
@@ -1711,7 +1711,7 @@ describe("cart and checkout", () => {
 
     allowPlacement();
     await user.click(screen.getByRole("button", { name: "Place Order" }));
-    await screen.findByRole("heading", { name: "Order Confirmed!", level: 1 }, { timeout: 5000 });
+    await screen.findByRole("heading", { name: "Order received", level: 1 }, { timeout: 5000 });
 
     const keys = idempotencyKeys();
     expect(keys.length).toBe(2);
@@ -2233,7 +2233,7 @@ describe("auth, account area and the business guard", () => {
     await user.click(screen.getByRole("button", { name: "Log out" }));
 
     // Back on the storefront.
-    await screen.findByText(/Made Simple/, {}, { timeout: 5000 });
+    await screen.findByText(/A little nazaakat/, {}, { timeout: 5000 });
 
     // The display snapshot is gone, so a reload has nothing to paint an account with.
     expect(localStorage.getItem(SNAPSHOT_KEY)).toBeNull();
@@ -2653,7 +2653,7 @@ describe("auth, account area and the business guard", () => {
 
     expect(screen.getByText(/only visible to the account that placed the order/)).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "Order not found" })).toBeNull();
-    expect(screen.queryByRole("heading", { name: "Order Confirmed!" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Order received" })).toBeNull();
     // The screen decided not to ask, rather than asking and being refused.
     expect(orderReads()).not.toContain(guestOrder.id);
   }, 30000);
@@ -2669,7 +2669,7 @@ describe("auth, account area and the business guard", () => {
     await screen.findByRole("heading", { name: "Order not found" }, { timeout: 5000 });
 
     expect(screen.getByText(/is not on this account/)).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Order Confirmed!" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Order received" })).toBeNull();
     expect(orderReads()).toContain("NN-2026-000404");
   }, 30000);
 
@@ -2685,7 +2685,7 @@ describe("auth, account area and the business guard", () => {
     await renderAt(`/order-success/${theirs.id}`, undefined, "b2c");
     await screen.findByRole("heading", { name: "Order not found" }, { timeout: 5000 });
 
-    expect(screen.queryByRole("heading", { name: "Order Confirmed!" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Order received" })).toBeNull();
   }, 30000);
 
   /**
@@ -2743,7 +2743,7 @@ describe("auth, account area and the business guard", () => {
     expect(await screen.findByText("ALMOND15 applied — ₹49 off.")).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: "Place Order" }));
-    await screen.findByRole("heading", { name: "Order Confirmed!", level: 1 }, { timeout: 5000 });
+    await screen.findByRole("heading", { name: "Order received", level: 1 }, { timeout: 5000 });
 
     const placed = issuedOrders()[0]!;
     expect(placed.discount).toBe(49);
@@ -2812,7 +2812,7 @@ describe("auth, account area and the business guard", () => {
 
     await fillDeliveryDetails(user);
     await user.click(screen.getByRole("button", { name: "Place Order" }));
-    await screen.findByRole("heading", { name: "Order Confirmed!", level: 1 }, { timeout: 5000 });
+    await screen.findByRole("heading", { name: "Order received", level: 1 }, { timeout: 5000 });
 
     const placed = issuedOrders()[0]!;
     expect(placed.status).toBe("pending");

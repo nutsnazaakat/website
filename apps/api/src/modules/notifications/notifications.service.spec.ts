@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 // backend/src/modules/notifications/notifications.service.spec.ts
 import { NotificationChannel, NotificationStatus } from '../../entities/enums';
 import { NotificationsService, type QueueInput } from './notifications.service';
@@ -101,4 +102,17 @@ describe('NotificationsService.queue', () => {
 
     expect(updates[0]?.patch.error).toBe('a plain string, not an Error');
   });
+});
+
+it('leaves production email queued and never calls the logging driver inside the transaction', async () => {
+  const { manager, saved, updates } = harness({ sentAt: new Date() });
+  const send = jest.fn(async () => ({ sentAt: new Date() }));
+  const service = new NotificationsService(
+    { send },
+    new ConfigService({ app: { isProduction: true } }),
+  );
+  await service.queue(manager as never, INPUT);
+  expect(saved[0]?.status).toBe(NotificationStatus.QUEUED);
+  expect(updates).toEqual([]);
+  expect(send).not.toHaveBeenCalled();
 });

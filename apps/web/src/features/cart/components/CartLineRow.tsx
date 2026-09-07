@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus } from "lucide-react";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { CatalogMedia } from "@/components/common/CatalogMedia";
 import type { Product } from "@/features/catalog/types";
 import { inr } from "@/lib/format";
@@ -15,6 +15,7 @@ interface CartLineRowProps {
 }
 
 export function CartLineRow({ line, product }: CartLineRowProps) {
+  const settings = useSiteSettings();
   const { setQty, remove, switchLineToBulk, lineTotalFor } = useCart();
   const total = lineTotalFor(line);
   const promptBulk = shouldPromptBulk(line, settings.bulkPromptThresholdGrams);
@@ -23,7 +24,11 @@ export function CartLineRow({ line, product }: CartLineRowProps) {
   return (
     <li className="border-sand border-b last:border-0">
       <div className="grid items-center gap-4 px-5 py-[18px] max-sm:grid-cols-[72px_minmax(0,1fr)] sm:grid-cols-[72px_minmax(0,1fr)_auto]">
-        <Link to="/product/$slug" params={{ slug: product.slug }} className="bg-sand size-[72px] overflow-hidden">
+        <Link
+          to="/product/$slug"
+          params={{ slug: product.slug }}
+          className="bg-sand size-[72px] overflow-hidden"
+        >
           <CatalogMedia src={product.images[0]} alt={product.name} className="size-[72px]" />
         </Link>
 
@@ -36,7 +41,7 @@ export function CartLineRow({ line, product }: CartLineRowProps) {
             type="button"
             aria-label={`Remove ${product.name}`}
             onClick={() => void remove(line.id)}
-            className="text-muted-foreground mt-2 text-[11px] font-bold tracking-[0.14em] uppercase hover:text-gold"
+            className="text-muted-foreground hover:text-gold mt-2 text-[11px] font-bold tracking-[0.14em] uppercase"
           >
             Remove
           </button>

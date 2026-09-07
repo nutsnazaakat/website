@@ -3,13 +3,14 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useProducts, WHOLE_CATALOGUE } from "@/features/catalog/hooks/useCatalog";
 import { UnavailableCartLine } from "@/features/cart/components/UnavailableCartLine";
 import { useCart } from "@/features/cart/CartProvider";
 import { inr } from "@/lib/format";
 
 export function CartDrawer() {
+  const settings = useSiteSettings();
   const { open, setOpen, lines, setQty, remove, totals, lineTotalFor, error, isLoading } =
     useCart();
   // A slug-to-name lookup, so it needs the catalogue rather than a page of it.
@@ -86,7 +87,7 @@ export function CartDrawer() {
                       loading="lazy"
                       width={80}
                       height={80}
-                        className="size-20 object-cover"
+                      className="size-20 object-cover"
                     />
                     <div className="flex-1">
                       <p className="text-sm font-semibold">{p.name}</p>

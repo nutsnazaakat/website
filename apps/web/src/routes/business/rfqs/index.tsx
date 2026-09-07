@@ -3,7 +3,7 @@ import { ClipboardList, Plus } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { RfqStatusBadge } from "@/features/rfq/components/RfqStatusBadge";
 import { useRfqs } from "@/features/rfq/hooks/useRfqs";
 import { useSeo } from "@/hooks/useSeo";
@@ -22,6 +22,7 @@ const day = (iso: string) =>
  * is what `GET /rfqs/:rfqNumber`'s relations are for.
  */
 function RfqList() {
+  const settings = useSiteSettings();
   const { data: rfqs, isLoading } = useRfqs();
 
   useSeo({

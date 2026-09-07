@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { useProducts, WHOLE_CATALOGUE } from "@/features/catalog/hooks/useCatalog";
 import type { Channel } from "@/features/catalog/types";
@@ -78,6 +78,7 @@ const upsert = (prev: CartLine[], line: CartLine): CartLine[] => {
 };
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const settings = useSiteSettings();
   const { user } = useAuth();
   const userId = user?.id ?? null;
 
@@ -203,7 +204,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setError(messageOf(failure));
       }
     },
-    [commit, find],
+    [commit, find, settings.freeShippingThreshold],
   );
 
   useEffect(() => {

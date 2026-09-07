@@ -7,10 +7,11 @@ import { applySeo, type SeoInput } from "@/lib/seo";
  * instead, which is what actually changes when a route's data resolves.
  */
 export function useSeo(input: SeoInput) {
-  const { title, description } = input;
+  const { title, description, canonical, ogImage, noindex } = input;
+  const structured = JSON.stringify(input.jsonLd);
 
   useEffect(() => {
     applySeo(input);
     // `input` is rebuilt every render; title/description are the meaningful signal.
-  }, [title, description]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [title, description, canonical, ogImage, noindex, structured]); // eslint-disable-line react-hooks/exhaustive-deps
 }

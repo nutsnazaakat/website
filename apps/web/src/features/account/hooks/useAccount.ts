@@ -1,3 +1,4 @@
+import { apiRequest } from "@/lib/http";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { accountApi, type SavedAddressInput } from "../api";
 import type { AccountOrder, OrderFilters, SavedAddress } from "../types";
@@ -60,10 +61,19 @@ export const useOrders = (filters: OrderFilters = {}) =>
  * hand-written key array that drifts by one element is a silent cache miss, which on the
  * confirmation screen is a 401 on the customer's own order.
  */
-export const useOrder = (orderNumber: string, options: { enabled?: boolean } = {}) =>
+export const useOrder = (
+  orderNumber: string,
+  options: { enabled?: boolean; receiptToken?: string } = {},
+) =>
   useQuery({
     queryKey: accountKeys.order(orderNumber),
-    queryFn: () => accountApi.getOrder(orderNumber),
+    queryFn: () =>
+      options.receiptToken
+        ? apiRequest<AccountOrder>(`/checkout/orders/${encodeURIComponent(orderNumber)}/receipt`, {
+            headers: { "X-Order-Token": options.receiptToken },
+          })
+        : accountApi.getOrder(orderNumber),
+    refetchInterval: options.receiptToken ? 10000 : false,
     enabled: options.enabled ?? true,
   });
 

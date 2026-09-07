@@ -1,4 +1,4 @@
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 
 /**
  * Brief §26. The six trust signals, plus the certification strip.
@@ -41,6 +41,7 @@ const signals = [
 ] as const;
 
 export function TrustSection({ heading = "Why buy from us" }: { heading?: string }) {
+  const settings = useSiteSettings();
   return (
     <section aria-label="Trust and assurance" className="container-page py-16">
       <h2 className="heading-shout">{heading}</h2>

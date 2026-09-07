@@ -8,7 +8,7 @@ import { ProductGridSkeleton } from "@/components/common/ProductGridSkeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { BULK_ROW_GRID, BulkProductCard } from "@/features/bulk/components/BulkProductCard";
 import { ShopFilters, type ShopFilterValue } from "@/features/catalog/components/ShopFilters";
 import { useCategories, useProductFacets, useProducts } from "@/features/catalog/hooks/useCatalog";
@@ -55,6 +55,7 @@ const sortOptions: { value: BulkSort; label: string }[] = [
 const columns = ["Product", "Grade", "MOQ", "Quantity", "Price / kg", "Actions"];
 
 function BulkCatalog() {
+  const settings = useSiteSettings();
   const { category } = Route.useParams();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();

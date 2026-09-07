@@ -1,3 +1,5 @@
+import { ConfigModule } from '@nestjs/config';
+import { EmailOutboxWorker } from './email-outbox.worker';
 // backend/src/modules/notifications/notifications.module.ts
 import { Module } from '@nestjs/common';
 import { LoggingModule } from '../../common/logging/logging.module';
@@ -16,9 +18,10 @@ import { NotificationsService } from './notifications.service';
  * imports state what a module actually depends on.
  */
 @Module({
-  imports: [LoggingModule],
+  imports: [LoggingModule, ConfigModule],
   providers: [
     NotificationsService,
+    EmailOutboxWorker,
     { provide: NOTIFICATION_DRIVER, useClass: LoggingNotificationDriver },
   ],
   exports: [NotificationsService],

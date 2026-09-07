@@ -3,7 +3,7 @@ import { z } from "zod";
 import { EmptyState } from "@/components/common/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { usePosts } from "@/features/content/hooks/useContent";
 import { BLOG_CATEGORIES } from "@/features/content/types";
 import { useSeo } from "@/hooks/useSeo";
@@ -23,6 +23,7 @@ const day = (iso: string) =>
   new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 
 function BlogIndex() {
+  const settings = useSiteSettings();
   const { category } = Route.useSearch();
   const { data: posts, isLoading, isError, refetch } = usePosts(category ?? "all");
 

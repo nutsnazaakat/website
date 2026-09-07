@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useProducts } from "@/features/catalog/hooks/useCatalog";
 import { useSeo } from "@/hooks/useSeo";
 import { inr } from "@/lib/format";
@@ -50,6 +50,7 @@ const businessTypes = [
 const slabHeadings = ["1–4 kg", "5–9 kg", "10–24 kg", "25–49 kg", "50 kg+"];
 
 function BulkOrders() {
+  const settings = useSiteSettings();
   useSeo({
     title: `Bulk & Wholesale Dry Fruits — Per-kg Pricing, GST Invoice | ${settings.brandName}`,
     description:
@@ -62,7 +63,7 @@ function BulkOrders() {
   return (
     <div>
       <section className="border-border bg-sand border-b">
-        <div className="container-page grid gap-8 py-16 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+        <div className="container-page grid [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] gap-8 py-16">
           <div>
             <p className="kicker mb-5">Wholesale &amp; B2B</p>
             <h1 className="page-h1">Buy Better. Buy Bigger. Pay Smarter.</h1>
@@ -94,7 +95,7 @@ function BulkOrders() {
               )}
             </div>
           </div>
-          <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
+          <div className="grid [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))] gap-3">
             {perks.map((p, i) => (
               <div key={p.title} className="border-border bg-card border p-5">
                 <span className="numeral">0{i + 1}</span>
@@ -119,7 +120,7 @@ function BulkOrders() {
               params={{ category: b.category }}
               className="bg-card hover:bg-sand px-5 py-5"
             >
-              <p className="leading-snug text-[13px] font-bold">{b.label}</p>
+              <p className="text-[13px] leading-snug font-bold">{b.label}</p>
               <p className="text-muted-foreground mt-1 text-[12px]">{b.blurb}</p>
             </Link>
           ))}

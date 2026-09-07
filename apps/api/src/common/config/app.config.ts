@@ -15,6 +15,9 @@ export interface AppConfiguration {
   env: Env['NODE_ENV'];
   port: number;
   isProduction: boolean;
+  trustProxyHops?: number;
+  payments?: { keyId: string; keySecret: string; webhookSecret: string };
+  email?: { apiKey: string; from: string };
   database: {
     host: string;
     port: number;
@@ -23,6 +26,7 @@ export interface AppConfiguration {
     database: string;
     schema: string;
     migrationsRun: boolean;
+    ssl?: boolean;
   };
   auth: {
     jwtSecret: string;
@@ -45,6 +49,13 @@ export const appConfig = registerAs(APP_CONFIG_KEY, (): AppConfiguration => {
     env: env.NODE_ENV,
     port: env.PORT,
     isProduction: env.NODE_ENV === 'production',
+    trustProxyHops: env.TRUST_PROXY_HOPS,
+    payments: {
+      keyId: env.RAZORPAY_KEY_ID,
+      keySecret: env.RAZORPAY_KEY_SECRET,
+      webhookSecret: env.RAZORPAY_WEBHOOK_SECRET,
+    },
+    email: { apiKey: env.RESEND_API_KEY, from: env.EMAIL_FROM },
     database: {
       host: env.DB_HOST,
       port: env.DB_PORT,
@@ -53,6 +64,7 @@ export const appConfig = registerAs(APP_CONFIG_KEY, (): AppConfiguration => {
       database: env.DB_NAME,
       schema: env.DB_SCHEMA,
       migrationsRun: env.DB_MIGRATIONS_RUN,
+      ssl: env.DB_SSL,
     },
     auth: {
       jwtSecret: env.JWT_SECRET,

@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useSeo } from "@/hooks/useSeo";
 
 export const Route = createFileRoute("/quality")({ component: Quality });
@@ -81,6 +81,7 @@ const journey = [
 ] as const;
 
 function Quality() {
+  const settings = useSiteSettings();
   useSeo({
     title: `Quality & Sourcing — Source to Delivery | ${settings.brandName}`,
     description:
@@ -106,10 +107,13 @@ function Quality() {
         <h2 className="heading-shout">Source to delivery</h2>
         <ol
           aria-label="Source to delivery journey"
-          className="mt-8 grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+          className="mt-8 grid [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))] gap-[18px]"
         >
           {journey.map((step, i) => (
-            <li key={step.title} className="border-border bg-card flex flex-col border px-6 py-[26px]">
+            <li
+              key={step.title}
+              className="border-border bg-card flex flex-col border px-6 py-[26px]"
+            >
               <span className="numeral">0{i + 1}</span>
               <h3 className="font-display mt-3 text-[26px] leading-[1.1]">{step.title}</h3>
               <p className="text-body mt-2 text-[14px] leading-[1.6]">{step.body}</p>
@@ -176,7 +180,7 @@ function Quality() {
           </Accordion>
         </div>
 
-        <div className="border-border bg-sand mt-14 grid items-center gap-6 border p-8 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
+        <div className="border-border bg-sand mt-14 grid [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))] items-center gap-6 border p-8">
           <div>
             <h2 className="font-display text-[clamp(28px,3.2vw,42px)]">
               Want the spec sheet for a specific grade?

@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { checkoutApi } from "@/features/checkout/api";
 import { inr } from "@/lib/format";
 
@@ -15,6 +15,7 @@ interface PincodeCheckerProps {
 }
 
 export function PincodeChecker({ orderValue }: PincodeCheckerProps) {
+  const settings = useSiteSettings();
   const [pincode, setPincode] = useState("");
   const { mutate, data, isPending, reset } = useMutation({
     mutationFn: checkoutApi.checkPincode,

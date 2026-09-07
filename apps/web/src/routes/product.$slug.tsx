@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { TierTable } from "@/features/bulk/components/TierTable";
 import { bulkTotal, isQuoteRequired } from "@/features/bulk/pricing";
 import { useCart } from "@/features/cart/CartProvider";
@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/product/$slug")({ component: ProductPage });
 
 function ProductPage() {
+  const settings = useSiteSettings();
   const { slug } = Route.useParams();
   const { data: product, isLoading, isError } = useProduct(slug);
   const { data: related } = useRelated(slug);
@@ -82,7 +83,7 @@ function ProductPage() {
   if (isLoading) {
     return (
       <div className="container-page py-9">
-        <div className="grid items-start gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
+        <div className="grid [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] items-start gap-[clamp(28px,4vw,56px)]">
           <Skeleton className="aspect-square w-full" />
           <div className="space-y-4">
             <Skeleton className="h-10 w-3/4" />
@@ -132,7 +133,7 @@ function ProductPage() {
         <span className="text-foreground">{product.name}</span>
       </nav>
 
-      <div className="mt-6 grid items-start gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
+      <div className="mt-6 grid [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] items-start gap-[clamp(28px,4vw,56px)]">
         <ProductGallery
           images={product.images}
           alt={`${product.name} — ${product.grade} grade from ${product.origin}`}
@@ -170,7 +171,7 @@ function ProductPage() {
               <p className="text-muted-foreground mb-2 text-[11px] font-semibold tracking-[0.14em] uppercase">
                 Pack size
               </p>
-              <div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(120px,1fr))]">
+              <div className="grid [grid-template-columns:repeat(auto-fit,minmax(120px,1fr))] gap-2">
                 {retailVariants.map((v) => (
                   <button
                     key={v.size}
@@ -181,7 +182,9 @@ function ProductPage() {
                      * button's accessible name — "1kg₹1,099" — with a hand-written copy of it.
                      */
                     aria-label={
-                      v.soldOut ? `${v.size} ${inr(v.price)} — sold out` : `${v.size}${inr(v.price)}`
+                      v.soldOut
+                        ? `${v.size} ${inr(v.price)} — sold out`
+                        : `${v.size}${inr(v.price)}`
                     }
                     onClick={() => setSizeInput(v.size)}
                     className={cn(
@@ -357,7 +360,10 @@ function ProductPage() {
               ["Ingredients", product.ingredients],
               ["HSN / GST", `${product.hsn} / ${product.gstRate}%`],
             ].map(([k, v]) => (
-              <div key={k} className="border-border grid grid-cols-[130px_minmax(0,1fr)] border-b py-3">
+              <div
+                key={k}
+                className="border-border grid grid-cols-[130px_minmax(0,1fr)] border-b py-3"
+              >
                 <dt className="text-muted-foreground text-[11px] font-semibold tracking-[0.1em] uppercase">
                   {k}
                 </dt>
@@ -429,7 +435,7 @@ function ProductPage() {
             <ProductGridSkeleton count={4} />
           ) : (
             related.items.length > 0 && (
-              <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+              <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-[18px]">
                 {related.items.map((p) => (
                   <ProductCard key={p.slug} product={p} />
                 ))}

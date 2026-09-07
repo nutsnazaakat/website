@@ -1,4 +1,4 @@
-import type { OrderChannel, OrderStatus } from '../constants/order-status';
+import type { OrderChannel, OrderStatus } from "../constants/order-status";
 
 export interface Address {
   fullName: string;
@@ -48,10 +48,12 @@ export interface OrderLine {
   total: number | null;
 }
 
-export type PaymentMethod = 'cod' | 'online';
-export type PaymentStatus = 'pending' | 'collected' | 'failed' | 'refunded';
+export type PaymentMethod = "cod" | "online";
+export type PaymentStatus = "pending" | "collected" | "failed" | "refunded";
 
 export interface AccountOrder {
+  /** Browser receipt access; returned only on checkout placement. */
+  checkoutToken?: string;
   /** `NN-{year}-{at least 6 digits}` — the order number, never the uuid. See `ORDER_NUMBER_PATTERN`. */
   id: string;
   email: string;
@@ -125,12 +127,12 @@ export type PlaceOrderResult = AccountOrder;
  * `shared` has no access to `ErrorCodes` — so it stays in the backend, pointed at this declaration.
  */
 export type CouponRefusalCode =
-  | 'COUPON_INVALID'
-  | 'COUPON_EXPIRED'
-  | 'COUPON_NOT_APPLICABLE'
-  | 'COUPON_MIN_ORDER_VALUE'
-  | 'COUPON_FIRST_ORDER_ONLY'
-  | 'COUPON_LIMIT_REACHED';
+  | "COUPON_INVALID"
+  | "COUPON_EXPIRED"
+  | "COUPON_NOT_APPLICABLE"
+  | "COUPON_MIN_ORDER_VALUE"
+  | "COUPON_FIRST_ORDER_ONLY"
+  | "COUPON_LIMIT_REACHED";
 
 /**
  * What `POST /checkout/coupon/preview` returns.

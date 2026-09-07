@@ -30,7 +30,7 @@ export function applySeo({ title, description, ogImage, canonical, jsonLd, noind
   upsertMeta("name", "robots", noindex ? "noindex,nofollow" : "index,follow");
   upsertMeta("property", "og:title", title);
   upsertMeta("property", "og:description", description);
-  if (ogImage) upsertMeta("property", "og:image", ogImage);
+  upsertMeta("property", "og:image", ogImage ?? `${window.location.origin}/assets/brand-hero.webp`);
 
   let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
   if (!link) {
@@ -38,7 +38,7 @@ export function applySeo({ title, description, ogImage, canonical, jsonLd, noind
     link.rel = "canonical";
     document.head.appendChild(link);
   }
-  link.href = canonical ?? window.location.href;
+  link.href = canonical ?? `${window.location.origin}${window.location.pathname}`;
 
   document.getElementById("route-jsonld")?.remove();
   if (jsonLd) {
