@@ -91,7 +91,7 @@ export function ShopPage() {
     page: search.page,
   };
 
-  const { data: products, isLoading } = useProducts(filters);
+  const { data: products, isLoading, isError, refetch } = useProducts(filters);
   const { data: categories } = useCategories();
 
   /**
@@ -222,7 +222,7 @@ export function ShopPage() {
                   )}
                 >
                   <span>{c.slug === "all" ? "All products" : c.name}</span>
-                  <span className="text-[#b3a896] text-[12px]" aria-hidden="true">
+                  <span className="text-[12px] text-[#b3a896]" aria-hidden="true">
                     {c.count}
                   </span>
                 </button>
@@ -234,7 +234,10 @@ export function ShopPage() {
             <p className="text-muted-foreground mt-1.5 text-[12px] leading-[1.5]">
               Per-kg slab pricing starts at 1 kg with GST invoicing.
             </p>
-            <Link to="/bulk-orders" className="section-link mt-3 inline-block hover:text-foreground">
+            <Link
+              to="/bulk-orders"
+              className="section-link hover:text-foreground mt-3 inline-block"
+            >
               Bulk pricing
             </Link>
           </div>
@@ -269,9 +272,15 @@ export function ShopPage() {
             </Sheet>
 
             <span className="text-muted-foreground text-[12px]">
-              Showing {items.length} of {total} products
+              {isLoading
+                ? "Loading products…"
+                : isError
+                  ? "Products unavailable"
+                  : `Showing ${items.length} of ${total} products`}
             </span>
-            <span className="text-muted-foreground ml-auto text-[12px]">{total} products</span>
+            <span className="text-muted-foreground ml-auto text-[12px]">
+              {!isLoading && !isError ? `${total} products` : ""}
+            </span>
 
             <Select
               value={search.sort ?? "featured"}
@@ -292,9 +301,21 @@ export function ShopPage() {
 
           {isLoading ? (
             <ProductGridSkeleton />
+          ) : isError ? (
+            <div role="alert">
+              <EmptyState
+                title="We couldn’t load the products."
+                body="Our catalogue is temporarily unavailable. Please try again shortly."
+                action={
+                  <Button variant="outline" onClick={() => void refetch()}>
+                    Retry loading products
+                  </Button>
+                }
+              />
+            </div>
           ) : items.length > 0 ? (
             <>
-              <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+              <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-[18px]">
                 {items.map((p) => (
                   <ProductCard key={p.slug} product={p} />
                 ))}
