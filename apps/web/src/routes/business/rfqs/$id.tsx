@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useProducts, WHOLE_CATALOGUE } from "@/features/catalog/hooks/useCatalog";
 import { RfqStatusBadge } from "@/features/rfq/components/RfqStatusBadge";
 import { useRfq } from "@/features/rfq/hooks/useRfqs";
@@ -10,6 +10,7 @@ import { inr } from "@/lib/format";
 export const Route = createFileRoute("/business/rfqs/$id")({ component: RfqDetail });
 
 function RfqDetail() {
+  const settings = useSiteSettings();
   const { id } = Route.useParams();
   const { data: rfq, isLoading } = useRfq(id);
   // Names the lines of this quote request, so it needs the catalogue, not a page of it.

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 
 /** The centred card both auth screens sit in. Sand background, single column, no chrome. */
 export function AuthCard({
@@ -14,6 +14,7 @@ export function AuthCard({
   children: ReactNode;
   footer: ReactNode;
 }) {
+  const settings = useSiteSettings();
   return (
     <div className="bg-sand">
       <div className="container-page flex min-h-[72vh] items-center justify-center py-12 sm:py-16">

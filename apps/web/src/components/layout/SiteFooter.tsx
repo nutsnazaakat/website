@@ -1,6 +1,6 @@
 import { Link, linkOptions } from "@tanstack/react-router";
 import { BrandMark } from "@/components/common/BrandMark";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 
 const cols = [
   {
@@ -43,30 +43,16 @@ const cols = [
 ] as const;
 
 export function SiteFooter() {
+  const settings = useSiteSettings();
   return (
     <footer className="border-border mt-0 border-t">
-      <div className="container-page grid gap-9 pt-14 pb-6 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+      <div className="container-page grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-9 pt-14 pb-6">
         <div>
           <BrandMark size="footer" />
           <p className="text-body mt-4 max-w-xs text-[14px] leading-[1.65]">{settings.tagline}</p>
-          <form
-            className="border-foreground mt-5 flex border-[1.5px]"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <input
-              type="email"
-              placeholder="Email for notes from the desk"
-              aria-label="Email for notes from the desk"
-              className="placeholder:text-placeholder min-w-0 flex-1 bg-transparent px-3 py-2.5 text-[13px] outline-none"
-            />
-            <button
-              type="submit"
-              className="bg-foreground text-background hover:bg-gold px-4 text-[16px]"
-              aria-label="Subscribe"
-            >
-              →
-            </button>
-          </form>
+          <Link to="/contact" className="section-link mt-5 inline-block">
+            Talk to our team
+          </Link>
         </div>
         {cols.map((c) => (
           <div key={c.title}>
@@ -90,7 +76,11 @@ export function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {settings.brandName}
           </p>
-          <p>GST invoicing on every order · Certifications listed once verified</p>
+          <div className="flex flex-wrap gap-4">
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
+            <Link to="/returns">Returns</Link>
+          </div>
         </div>
       </div>
     </footer>

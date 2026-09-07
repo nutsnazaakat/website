@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import type { Repository } from 'typeorm';
 import { Setting } from '../../entities/ops/setting.entity';
 import { SettingsService } from './settings.service';
@@ -61,7 +62,7 @@ describe('SettingsService.payment', () => {
    * the decision away from the person whose decision it is. Asserted by the case above; asserted
    * here that turning online *on* is also just reported, not overridden.
    */
-  it('reports whatever the rows say, without inventing a rule that one method must be on', async () => {
+  it('keeps online payments disabled without gateway credentials', async () => {
     const { service: settings } = service([
       { key: 'codEnabled', value: false },
       { key: 'onlinePaymentEnabled', value: true },
@@ -69,7 +70,7 @@ describe('SettingsService.payment', () => {
 
     await expect(settings.payment()).resolves.toEqual({
       codEnabled: false,
-      onlinePaymentEnabled: true,
+      onlinePaymentEnabled: false,
     });
   });
 
@@ -116,4 +117,18 @@ describe('SettingsService.payment', () => {
     const [criteria] = find.mock.calls.at(0) as [{ where: { key: { _value: string[] } } }];
     expect(criteria.where.key._value).toEqual(['codEnabled', 'onlinePaymentEnabled']);
   });
+});
+
+it('enables online only when the flag and all gateway credentials are configured', async () => {
+  const find = jest.fn(async () => [
+    { key: 'onlinePaymentEnabled', value: true },
+    { key: 'codEnabled', value: false },
+  ]);
+  const config = new ConfigService({
+    app: { payments: { keyId: 'key', keySecret: 'secret', webhookSecret: 'webhook' } },
+  });
+  const enabled = new SettingsService({ find } as unknown as Repository<Setting>, config);
+  expect((await enabled.payment()).onlinePaymentEnabled).toBe(true);
+  config.set('app.payments.webhookSecret', '');
+  expect((await enabled.payment()).onlinePaymentEnabled).toBe(false);
 });

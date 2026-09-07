@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useAddresses } from "@/features/account/hooks/useAccount";
 import type { SavedAddress } from "@/features/account/types";
 import {
@@ -324,6 +324,7 @@ function ProfileForm({
  * less of it was ever real.
  */
 function BusinessProfilePage() {
+  const settings = useSiteSettings();
   useSeo({
     title: `Business Profile | ${settings.brandName}`,
     description: "Company details, GSTIN and the addresses we bill and ship to.",

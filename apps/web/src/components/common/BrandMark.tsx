@@ -2,14 +2,15 @@ import { cn } from "@/lib/utils";
 
 export function BrandMark({ size = "header" }: { size?: "header" | "footer" }) {
   return (
-    <span
+    <img
+      src="/assets/nuts-nazaakat-logo.webp"
+      alt="Nuts & Nazaakat — Premium Dry Fruits"
+      width="600"
+      height="304"
       className={cn(
-        "text-foreground flex flex-col font-black tracking-[-0.02em] uppercase",
-        size === "header" ? "text-[13px] leading-[1.05]" : "text-[22px] leading-[1.02]",
+        "object-cover mix-blend-multiply",
+        size === "header" ? "h-[66px] w-[130px] sm:h-[78px] sm:w-[155px]" : "h-[110px] w-[220px]",
       )}
-    >
-      <span>Nuts &amp;</span>
-      <span>Nazaakat</span>
-    </span>
+    />
   );
 }

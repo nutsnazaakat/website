@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock3 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { Markdown } from "@/features/content/components/Markdown";
 import { usePost, useRelatedPosts } from "@/features/content/hooks/useContent";
 import { BLOG_CATEGORIES, type BlogCategory } from "@/features/content/types";
@@ -24,6 +24,7 @@ const day = (iso: string) =>
   new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
 function BlogPostPage() {
+  const settings = useSiteSettings();
   const { slug } = Route.useParams();
   const { data: post, isLoading, isError } = usePost(slug);
   const { data: related } = useRelatedPosts(slug);
@@ -103,11 +104,7 @@ function BlogPostPage() {
            * guarantee where it can actually be checked, and a value outside the list degrades to the
            * unfiltered journal instead of building a link the router would reject.
            */}
-          <Link
-            to="/blog"
-            search={filterFor(post.category)}
-            className="hover:text-foreground"
-          >
+          <Link to="/blog" search={filterFor(post.category)} className="hover:text-foreground">
             {post.category}
           </Link>
         </nav>

@@ -3,7 +3,7 @@ import { Heart } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ProductGridSkeleton } from "@/components/common/ProductGridSkeleton";
 import { Button } from "@/components/ui/button";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { ProductCard } from "@/features/catalog/components/ProductCard";
 import { useSavedProducts } from "@/features/wishlist/hooks/useWishlist";
 import { useWishlist } from "@/features/wishlist/WishlistProvider";
@@ -12,6 +12,7 @@ import { useSeo } from "@/hooks/useSeo";
 export const Route = createFileRoute("/wishlist")({ component: WishlistPage });
 
 function WishlistPage() {
+  const settings = useSiteSettings();
   useSeo({
     title: `Your Wishlist — ${settings.brandName}`,
     description: "The dry fruits you have saved for later, priced as they are today.",

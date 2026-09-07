@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { AddressForm, type SavedAddressValues } from "@/features/account/components/AddressForm";
 import { useAddresses, useAddressMutations } from "@/features/account/hooks/useAccount";
 import type { SavedAddress } from "@/features/account/types";
@@ -61,6 +61,7 @@ function AddressCard({
 }
 
 function AccountAddresses() {
+  const settings = useSiteSettings();
   // No email anywhere on this page. All five address endpoints are scoped by the session cookie, and
   // `/account` is behind `requireCustomer` in the layout's `beforeLoad`, so there is no signed-out
   // state to render and nothing for a client to name.

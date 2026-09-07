@@ -165,43 +165,14 @@ export class CheckoutService {
         );
       }
 
-      /**
-       * §10.4. Refused unconditionally rather than gated on the `onlinePaymentEnabled` setting,
-       * because flipping that setting would not make online payment work — there is no gateway, no
-       * `Payment.reference` to record and no webhook to collect. The setting gates the *card* on the
-       * checkout form (Task 13); this is the server refusing to open an order it cannot take money
-       * for. `PlaceOrderDto` refuses the same value first, so this answers only a caller that
-       * reached the service without validation.
-       */
-      if (dto.paymentMethod !== 'cod') {
+      const methods = await this.settings.payment();
+      if (!(
+        (dto.paymentMethod === 'cod' && methods.codEnabled) ||
+        (dto.paymentMethod === 'online' && methods.onlinePaymentEnabled)
+      )) {
         throw new DomainError(
           ErrorCodes.PAYMENT_METHOD_UNAVAILABLE,
-          'Online payment is not available yet. Please choose cash on delivery.',
-          HttpStatus.UNPROCESSABLE_ENTITY,
-          { paymentMethod: dto.paymentMethod },
-        );
-      }
-
-      /**
-       * `codEnabled`, read at last — it was written by `settings.seed.ts` and read by **nothing**,
-       * so the only payment method the shop accepts was governed by a switch with no effect. An
-       * admin who turned COD off changed nothing and believed they had stopped taking orders.
-       *
-       * The **same** code `"online"` gets, because from the customer's side it is the same fact:
-       * the method they chose is not available. Only the sentence differs, and it has to — "please
-       * choose cash on delivery" is useless advice when cash on delivery is the thing that is off.
-       *
-       * Read after the method check, so a request for a method this service never accepts costs no
-       * query, and inside the transaction so it is one read per placement rather than per line.
-       * Both flags come back together; nothing here consults `onlinePaymentEnabled`, deliberately —
-       * the refusal above is unconditional because flipping that setting would not make online
-       * payment work, there being no gateway, no `Payment.reference` to record and no webhook to
-       * collect. That setting gates the *card* on the checkout form.
-       */
-      if (!(await this.settings.payment()).codEnabled) {
-        throw new DomainError(
-          ErrorCodes.PAYMENT_METHOD_UNAVAILABLE,
-          'We are not accepting cash on delivery orders at the moment. Please try again later.',
+          'This payment method is currently unavailable. Please choose another method.',
           HttpStatus.UNPROCESSABLE_ENTITY,
           { paymentMethod: dto.paymentMethod },
         );
@@ -249,7 +220,8 @@ export class CheckoutService {
         businessId: null,
         channel,
         status: 'pending',
-        paymentMethod: PaymentMethodEnum.COD,
+        paymentMethod:
+          dto.paymentMethod === 'online' ? PaymentMethodEnum.ONLINE : PaymentMethodEnum.COD,
         paymentStatus: PaymentStatusEnum.PENDING,
         subtotalPaise,
         discountPaise,
@@ -295,7 +267,7 @@ export class CheckoutService {
 
       await manager.getRepository(Payment).insert({
         orderId: order.id,
-        method: PaymentMethodEnum.COD,
+        method: dto.paymentMethod === 'online' ? PaymentMethodEnum.ONLINE : PaymentMethodEnum.COD,
         status: PaymentStatusEnum.PENDING,
         amountPaise: totalPaise,
         collectedAt: null,
@@ -349,7 +321,7 @@ export class CheckoutService {
       await this.notifications.queue(manager, {
         userId: order.userId,
         channel: NotificationChannel.EMAIL,
-        template: 'order.confirmed',
+        template: dto.paymentMethod === 'online' ? 'order.awaiting-payment' : 'order.confirmed',
         payload: {
           orderNumber: order.orderNumber,
           email: dto.shipping.email,

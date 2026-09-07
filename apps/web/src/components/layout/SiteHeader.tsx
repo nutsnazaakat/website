@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Heart, Menu, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from "@/components/ui/sheet";
 import { BrandMark } from "@/components/common/BrandMark";
 import { useCart } from "@/features/cart/CartProvider";
 import { useSearchDialog } from "@/features/catalog/SearchProvider";
@@ -37,16 +37,19 @@ export function SiteHeader() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-72 p-6">
+            <SheetTitle className="sr-only">Menu</SheetTitle>
             <BrandMark />
             <nav className="mt-8 flex flex-col gap-1">
               {nav.map((n) => (
-                <Link
-                  key={n.to}
-                  to={n.to}
-                  className="hover:bg-sand px-2 py-2 text-[12px] font-semibold tracking-[0.12em] uppercase"
-                >
-                  {n.label}
-                </Link>
+                <SheetClose asChild key={n.to}>
+                  <Link
+                    key={n.to}
+                    to={n.to}
+                    className="hover:bg-sand px-2 py-2 text-[12px] font-semibold tracking-[0.12em] uppercase"
+                  >
+                    {n.label}
+                  </Link>
+                </SheetClose>
               ))}
             </nav>
           </SheetContent>
@@ -56,7 +59,7 @@ export function SiteHeader() {
           <BrandMark />
         </Link>
 
-        <nav className="hidden items-center gap-[22px] lg:flex">
+        <nav className="hidden items-center gap-4 lg:flex" aria-label="Main navigation">
           {nav.map((n) => (
             <Link
               key={n.to}

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { TrustSection } from "@/components/common/TrustSection";
 import { Button } from "@/components/ui/button";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useSeo } from "@/hooks/useSeo";
 
 export const Route = createFileRoute("/about")({ component: About });
@@ -32,6 +32,7 @@ const principles = [
 ] as const;
 
 function About() {
+  const settings = useSiteSettings();
   useSeo({
     title: `Our Story | ${settings.brandName}`,
     description:
@@ -44,8 +45,7 @@ function About() {
         <div className="container-page py-16">
           <p className="kicker mb-5">Our Story</p>
           <h1 className="page-h1 max-w-3xl">
-            Small packs for home.{" "}
-            <span className="block">Bulk supply for business.</span>
+            Small packs for home. <span className="block">Bulk supply for business.</span>
           </h1>
           <p className="text-body mt-4 max-w-2xl text-[16px] leading-[1.65]">
             {settings.brandName} exists because buying dry fruit well is unreasonably hard. The same
@@ -56,7 +56,7 @@ function About() {
       </section>
 
       <section className="container-page py-16">
-        <div className="grid gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]">
+        <div className="grid [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))] gap-[clamp(28px,4vw,56px)]">
           <div className="text-body space-y-5 text-[15px] leading-[1.75]">
             <h2 className="heading-shout text-[clamp(20px,2.2vw,28px)]">What we set out to fix</h2>
             <p>
@@ -87,7 +87,9 @@ function About() {
               anything that needs a specification conversation, you get a numbered quote request
               instead of a dead end.
             </p>
-            <h2 className="heading-shout pt-4 text-[clamp(20px,2.2vw,28px)]">What we will not do</h2>
+            <h2 className="heading-shout pt-4 text-[clamp(20px,2.2vw,28px)]">
+              What we will not do
+            </h2>
             <p>
               We will not print a claim we cannot stand behind. If a page here does not show a
               certification badge, that is deliberate — it means the certification is not

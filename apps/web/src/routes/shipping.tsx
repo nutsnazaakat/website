@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "@/components/common/LegalPage";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { inr } from "@/lib/format";
 
 export const Route = createFileRoute("/shipping")({ component: Shipping });
 
 function Shipping() {
+  const settings = useSiteSettings();
   return (
     <LegalPage
       title="Shipping Policy"

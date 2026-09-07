@@ -59,3 +59,6 @@ nutwala-client/
 nutwala-admin/
 nutwala-backend/
 .neon
+
+# Reviewable production configuration template (no credentials).
+!deploy/.env.production.example

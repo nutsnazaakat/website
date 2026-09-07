@@ -7,7 +7,7 @@ import {
   UserCog,
   UserRound,
 } from "lucide-react";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { requireBusiness } from "@/features/auth/guards";
 import { useCart } from "@/features/cart/CartProvider";
 
@@ -41,6 +41,7 @@ const nav = [
 ];
 
 function BusinessLayout() {
+  const settings = useSiteSettings();
   const { lines } = useCart();
   const bulkCount = lines.filter((l) => l.mode === "bulk").length;
 

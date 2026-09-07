@@ -241,7 +241,15 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 
   // 204 and an empty body are valid successes with nothing to parse.
   const text = await response.text();
-  const payload: unknown = text.length > 0 ? JSON.parse(text) : null;
+  let payload: unknown = null;
+  try {
+    payload = text.length > 0 ? JSON.parse(text) : null;
+  } catch {
+    throw new ApiRequestError(
+      response.status || 503,
+      "Our shop is temporarily unavailable. Please try again shortly.",
+    );
+  }
 
   if (!response.ok) {
     const error = payload as ApiError | null;

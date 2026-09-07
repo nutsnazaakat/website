@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageBand } from "@/components/common/PageBand";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { ComboCard } from "@/features/catalog/components/ComboCard";
 import { useCombos } from "@/features/catalog/hooks/useCatalog";
 import { useSeo } from "@/hooks/useSeo";
@@ -10,6 +10,7 @@ import { useSeo } from "@/hooks/useSeo";
 export const Route = createFileRoute("/combos")({ component: Combos });
 
 function Combos() {
+  const settings = useSiteSettings();
   const { data: combos, isLoading } = useCombos();
 
   useSeo({
@@ -28,7 +29,7 @@ function Combos() {
 
       <section className="container-page py-16">
         {isLoading || combos === undefined ? (
-          <div className="grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
+          <div className="grid [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] gap-5">
             {Array.from({ length: 6 }, (_, i) => (
               <Skeleton key={i} className="h-[420px] w-full" />
             ))}
@@ -36,7 +37,7 @@ function Combos() {
         ) : (
           <ul
             aria-label="Combo boxes"
-            className="grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+            className="grid [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))] gap-5"
           >
             {combos.map((c) => (
               <ComboCard key={c.slug} combo={c} />

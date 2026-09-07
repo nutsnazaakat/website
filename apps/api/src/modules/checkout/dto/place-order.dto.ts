@@ -79,22 +79,8 @@ export class PlaceOrderDto {
   @Type(() => AddressDto)
   shipping: AddressDto;
 
-  /**
-   * COD only, and refused at the DTO rather than only in the service.
-   *
-   * §10.4 requires `"online"` to answer `422 PAYMENT_METHOD_UNAVAILABLE`, and `settings.seed.ts`
-   * seeds `onlinePaymentEnabled: false` because there is no gateway. A DTO that accepted a value the
-   * service always rejects would be a contract lying about what it takes.
-   *
-   * The **type** is still the full `PaymentMethod` union while the **validator** is `['cod']`, and
-   * the two are deliberately out of step: narrowing the type to `'cod'` would make the service's
-   * `=== 'online'` branch a compile error, and that branch is what answers a caller who reaches the
-   * service without passing through this class — an internal call, a future admin-placed order, or a
-   * pipe misconfigured to skip validation. The rejection is stated twice because the two rejections
-   * protect different callers.
-   */
-  @ApiProperty({ enum: ['cod'] })
-  @IsIn(['cod'], { message: 'Only cash on delivery is available at the moment' })
+  @ApiProperty({ enum: ['cod', 'online'] })
+  @IsIn(['cod', 'online'])
   paymentMethod: PaymentMethod;
 
   /** `orders.coupon_code` is `varchar(40)`. Matched case-insensitively by `CouponService`. */

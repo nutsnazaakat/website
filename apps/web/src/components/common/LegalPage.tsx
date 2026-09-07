@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle } from "lucide-react";
 import { PolicyTabs } from "@/components/common/PolicyTabs";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useSeo } from "@/hooks/useSeo";
 
 export interface LegalSection {
@@ -40,6 +40,7 @@ export function LegalPage({
   metaDescription,
   tabs,
 }: LegalPageProps) {
+  const settings = useSiteSettings();
   useSeo({
     title: `${title} | ${settings.brandName}`,
     description: metaDescription,

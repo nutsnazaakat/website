@@ -1,3 +1,4 @@
+import { OnlinePayment, receiptToken } from "@/features/checkout/components/OnlinePayment";
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { format } from "date-fns";
@@ -5,7 +6,7 @@ import { CheckCircle2, MapPin, PackageCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { LineName } from "@/features/account/components/LineName";
 import { OrderStatusBadge } from "@/features/account/components/OrderStatusBadge";
 import { OrderTotals } from "@/features/account/components/OrderTotals";
@@ -34,9 +35,15 @@ function Confirmation({ order }: { order: AccountOrder }) {
     <>
       <div className="border-border rounded-3xl border p-6 text-center sm:p-10">
         <CheckCircle2 className="text-leaf mx-auto size-14" />
-        <h1 className="font-display mt-4 text-4xl">Order Confirmed!</h1>
+        <h1 className="font-display mt-4 text-4xl">
+          {order.paymentMethod === "online" && order.paymentStatus === "pending"
+            ? "Payment pending"
+            : order.status === "cancelled"
+              ? "Order cancelled"
+              : "Order received"}
+        </h1>
         <p className="text-muted-foreground mt-3 text-sm">
-          Thank you. We have your order and will email you when it is dispatched.
+          Thank you. Your latest order details are shown below.
         </p>
         <p className="bg-sand mt-5 inline-block rounded-full px-4 py-2 text-sm font-semibold">
           Order ID: {order.id}
@@ -50,6 +57,8 @@ function Confirmation({ order }: { order: AccountOrder }) {
           <OrderStatusBadge status={order.status} />
         </div>
       </div>
+
+      <OnlinePayment order={order} />
 
       <div className="border-border mt-6 rounded-2xl border p-6">
         <h2 className="font-display text-2xl">Order details</h2>
@@ -206,7 +215,7 @@ function NotFound({ id }: { id: string }) {
  *    scope the endpoint reads, so "not in your history" is the whole answer.
  * 3. **Not cached, and a guest.** Neither fetch nor "not found" — see `SignInToSeeIt`.
  *
- * The screen used to be a single unconditional state: `<h1>Order Confirmed!</h1>` and
+ * The screen used to be a single unconditional state: `<h1>{order.paymentMethod === "online" && order.paymentStatus === "pending" ? "Payment pending" : order.status === "cancelled" ? "Order cancelled" : "Order received"}</h1>` and
  * `Order ID: {id}` were rendered straight from the URL parameter with no lookup, so
  * `/order-success/NN-9999-999999` congratulated anyone who typed it on an order that does not exist.
  * It read its detail block once and synchronously out of a `sessionStorage` receipt, so a reload in a
@@ -225,6 +234,7 @@ function NotFound({ id }: { id: string }) {
  * line added in another tab.
  */
 function OrderSuccessPage() {
+  const settings = useSiteSettings();
   const { id } = Route.useParams();
   const { isAuthenticated, isLoading: sessionPending } = useAuth();
   const queryClient = useQueryClient();
@@ -235,11 +245,15 @@ function OrderSuccessPage() {
    */
   const cached = queryClient.getQueryData<AccountOrder>(accountKeys.order(id)) !== undefined;
 
-  const { data: order, isLoading } = useOrder(id, { enabled: !cached && isAuthenticated });
+  const token = receiptToken(id);
+  const { data: order, isLoading } = useOrder(id, {
+    enabled: Boolean(token) || (!cached && isAuthenticated),
+    receiptToken: token,
+  });
 
   useSeo({
     title: order
-      ? `Order ${order.id} confirmed — ${settings.brandName}`
+      ? `Order ${order.id} — ${settings.brandName}`
       : `Order ${id} — ${settings.brandName}`,
     description: "Thank you for your order. Your confirmation and delivery estimate are below.",
     // A confirmation carries the customer's name, phone and street address at an unguarded URL.

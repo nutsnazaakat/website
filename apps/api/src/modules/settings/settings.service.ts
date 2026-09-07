@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import type { PublicSettings } from '@nutwala/shared';
 import { In, Repository } from 'typeorm';
@@ -49,7 +50,10 @@ const FALLBACK: PaymentSettings = { codEnabled: true, onlinePaymentEnabled: fals
  */
 @Injectable()
 export class SettingsService {
-  constructor(@InjectRepository(Setting) private readonly settings: Repository<Setting>) {}
+  constructor(
+    @InjectRepository(Setting) private readonly settings: Repository<Setting>,
+    @Optional() private readonly config?: ConfigService,
+  ) {}
 
   /**
    * `GET /settings` — every row an anonymous visitor may see, keyed by setting name.
@@ -73,7 +77,10 @@ export class SettingsService {
    */
   async publicSettings(): Promise<PublicSettings> {
     const rows = await this.settings.find({ where: { isPublic: true }, order: { key: 'ASC' } });
-    return Object.fromEntries(rows.map((row) => [row.key, row.value]));
+    const result = Object.fromEntries(rows.map((row) => [row.key, row.value]));
+    // Never advertise a gateway that has no server-side credentials.
+    result.onlinePaymentEnabled = result.onlinePaymentEnabled === true && this.gatewayReady();
+    return result;
   }
 
   /**
@@ -97,6 +104,16 @@ export class SettingsService {
       return typeof row?.value === 'boolean' ? row.value : FALLBACK[key];
     };
 
-    return { codEnabled: flag('codEnabled'), onlinePaymentEnabled: flag('onlinePaymentEnabled') };
+    return {
+      codEnabled: flag('codEnabled'),
+      onlinePaymentEnabled: flag('onlinePaymentEnabled') && this.gatewayReady(),
+    };
+  }
+  private gatewayReady(): boolean {
+    return !!(
+      this.config?.get('app.payments.keyId') &&
+      this.config?.get('app.payments.keySecret') &&
+      this.config?.get('app.payments.webhookSecret')
+    );
   }
 }

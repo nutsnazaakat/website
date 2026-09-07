@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Package } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { Button } from "@/components/ui/button";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { OrdersTable, OrdersTableSkeleton } from "@/features/account/components/OrdersTable";
 import { useBusinessOrders } from "@/features/business/hooks/useBusiness";
 import { useSeo } from "@/hooks/useSeo";
@@ -10,6 +10,7 @@ import { useSeo } from "@/hooks/useSeo";
 export const Route = createFileRoute("/business/orders")({ component: BusinessOrders });
 
 function BusinessOrders() {
+  const settings = useSiteSettings();
   // `GET /business/orders` — deep-equal to `GET /account/orders?channel=bulk` on the wire
   // (`BusinessesController.listOrders`'s own docblock), at the URL this page actually calls.
   const { data: orders, isLoading } = useBusinessOrders();

@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useProducts, WHOLE_CATALOGUE } from "@/features/catalog/hooks/useCatalog";
 import { useCreateRfq } from "@/features/rfq/hooks/useRfqs";
 import {
@@ -66,6 +66,7 @@ function prefillLines(search: z.infer<typeof searchSchema>): RfqLine[] {
 }
 
 function NewRfq() {
+  const settings = useSiteSettings();
   const search = Route.useSearch();
   // Every product has to be pickable from the form, so it needs the catalogue, not a page of it.
   const { data: catalogue } = useProducts({ limit: WHOLE_CATALOGUE });

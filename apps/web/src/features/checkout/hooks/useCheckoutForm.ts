@@ -2,10 +2,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Banknote, CreditCard } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { PINCODE_REGEX, type PaymentMethod } from "@/contract";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { accountKeys } from "@/features/account/hooks/useAccount";
 import { useCart } from "@/features/cart/CartProvider";
 import { useProducts, WHOLE_CATALOGUE } from "@/features/catalog/hooks/useCatalog";
@@ -53,6 +53,7 @@ const payments: { value: PaymentMethod; icon: typeof Banknote; label: string; hi
  * cannot clear. Handing the typed `UseFormReturn` down keeps that a compile error.
  */
 export function useCheckoutForm() {
+  const settings = useSiteSettings();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { lines, totals, lineTotalFor, reload: reloadCart } = useCart();
@@ -109,6 +110,17 @@ export function useCheckoutForm() {
       specialInstructions: "",
     },
   });
+
+  useEffect(() => {
+    const selected = form.getValues("paymentMethod");
+    if (
+      (selected === "online" && !settings.onlinePaymentEnabled) ||
+      (selected === "cod" && !settings.codEnabled)
+    ) {
+      if (settings.codEnabled || settings.onlinePaymentEnabled)
+        form.setValue("paymentMethod", settings.codEnabled ? "cod" : "online");
+    }
+  }, [form, settings.codEnabled, settings.onlinePaymentEnabled]);
 
   const billingSame = form.watch("billingSameAsShipping") !== false;
 
@@ -186,6 +198,13 @@ export function useCheckoutForm() {
   const placement = useMutation({
     mutationFn: (values: CheckoutFormValues) => checkoutApi.placeOrder(values, keyForAttempt()),
     onSuccess: async (order) => {
+      if (order.checkoutToken) {
+        try {
+          sessionStorage.setItem(`nn.receipt.${order.id}`, order.checkoutToken);
+        } catch {
+          /* The current tab cache still has the receipt. */
+        }
+      }
       // Cleared here and nowhere else: this attempt is over, so the next order needs its own key.
       attemptKey.current = null;
 

@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { LineName } from "@/features/account/components/LineName";
 import { OrderStatusBadge } from "@/features/account/components/OrderStatusBadge";
 import { OrderTimeline } from "@/features/account/components/OrderTimeline";
@@ -110,6 +110,7 @@ function CancelOrderButton({ order }: { order: AccountOrder }) {
 }
 
 function AccountOrderDetail() {
+  const settings = useSiteSettings();
   const { id } = Route.useParams();
   const { data: order, isLoading } = useOrder(id);
 

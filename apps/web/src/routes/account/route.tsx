@@ -2,7 +2,7 @@ import { createFileRoute, Link, linkOptions, Outlet, useNavigate } from "@tansta
 import { Briefcase, LayoutDashboard, LogOut, MapPin, Package, UserCog } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { requireCustomer } from "@/features/auth/guards";
 
@@ -30,6 +30,7 @@ const linkClass =
   "flex items-center gap-2 whitespace-nowrap rounded-xl border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-primary/50 lg:border-transparent lg:px-3";
 
 function AccountLayout() {
+  const settings = useSiteSettings();
   const { user, role, logout } = useAuth();
   const navigate = useNavigate();
 

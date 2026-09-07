@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageBand } from "@/components/common/PageBand";
 import { ProductGridSkeleton } from "@/components/common/ProductGridSkeleton";
 import { Button } from "@/components/ui/button";
-import { settings } from "@/config/settings";
+import { useSiteSettings } from "@/config/useSiteSettings";
 import { ProductCard } from "@/features/catalog/components/ProductCard";
 import { useProducts } from "@/features/catalog/hooks/useCatalog";
 import { CorporateGiftingForm } from "@/features/gifting/components/CorporateGiftingForm";
@@ -48,6 +48,7 @@ const sections = [
 ] as const;
 
 function Gifting() {
+  const settings = useSiteSettings();
   const { data: giftBoxes } = useProducts({ category: "combos" });
   const boxes = giftBoxes?.items ?? [];
 
@@ -74,9 +75,18 @@ function Gifting() {
         </div>
       </PageBand>
 
+      <div className="container-page pt-10">
+        <img
+          src="/assets/brand-gifting.webp"
+          alt="Nuts & Nazaakat gift assortment"
+          width="1536"
+          height="1024"
+          className="max-h-[520px] w-full object-cover"
+        />
+      </div>
       <section className="container-page py-16">
         <h2 className="heading-shout">What we put together</h2>
-        <div className="mt-6 grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(290px,1fr))]">
+        <div className="mt-6 grid [grid-template-columns:repeat(auto-fit,minmax(290px,1fr))] gap-[18px]">
           {sections.map((s, i) => (
             <article
               key={s.anchor}
@@ -113,7 +123,7 @@ function Gifting() {
           {giftBoxes === undefined ? (
             <ProductGridSkeleton count={4} />
           ) : (
-            <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+            <div className="grid [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))] gap-[18px]">
               {boxes.slice(0, 4).map((p) => (
                 <ProductCard key={p.slug} product={p} />
               ))}
@@ -124,9 +134,11 @@ function Gifting() {
 
       <section id="enquiry" className="container-page scroll-mt-24 pb-20">
         <div className="bg-foreground text-background p-[clamp(28px,4vw,52px)]">
-          <div className="grid items-start gap-9 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+          <div className="grid [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] items-start gap-9">
             <div>
-              <h2 className="font-display text-[clamp(28px,3.2vw,42px)]">Request a gifting quote</h2>
+              <h2 className="font-display text-[clamp(28px,3.2vw,42px)]">
+                Request a gifting quote
+              </h2>
               <p className="text-ink-muted mt-3 max-w-md text-[15px] leading-[1.7]">
                 Tell us the volume, budget and date. We come back with box options and a written
                 quotation against a request number you can track.

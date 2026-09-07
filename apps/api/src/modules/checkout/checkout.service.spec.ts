@@ -494,41 +494,23 @@ describe('CheckoutService.place — refusals', () => {
     });
   });
 
-  /**
-   * `"online"` stays refused whatever the setting says, and this is the assertion that stops someone
-   * "completing" step 1b by gating it: flipping `onlinePaymentEnabled` would not make online payment
-   * work — there is no gateway, no `Payment.reference` to record and no webhook to collect. That
-   * setting gates the *card* on the checkout form, not the server's willingness to open an order it
-   * cannot take money for.
-   */
-  it('still refuses "online" when the admin has switched online payment on', async () => {
+  it('reserves an unpaid online order when the gateway is available', async () => {
     const { service, recorded } = harness({
       payment: { codEnabled: true, onlinePaymentEnabled: true },
     });
-
-    await expect(
-      service.place(OWNER, { ...DTO, paymentMethod: 'online' }, undefined),
-    ).rejects.toMatchObject({
-      code: 'PAYMENT_METHOD_UNAVAILABLE',
-      status: HttpStatus.UNPROCESSABLE_ENTITY,
-    });
-    expect(recorded.writes).toEqual([]);
+    const order = await service.place(OWNER, { ...DTO, paymentMethod: 'online' }, undefined);
+    expect(order.paymentMethod).toBe('ONLINE');
+    expect(order.paymentStatus).toBe('PENDING');
+    expect(order.status).toBe('pending');
+    expect(placed(recorded).totalPaise).toBe(129878n);
   });
 
-  /**
-   * Order of the two refusals, so the settings read costs nothing on a request this service was
-   * never going to accept. Asserted through the fake's call count rather than by reading the source.
-   */
-  it('does not read the settings for a payment method it refuses outright', async () => {
+  it('reads the availability before refusing online payment', async () => {
     const { service, settingsService } = harness({});
-
     await expect(
       service.place(OWNER, { ...DTO, paymentMethod: 'online' }, undefined),
-    ).rejects.toMatchObject({
-      code: 'PAYMENT_METHOD_UNAVAILABLE',
-    });
-
-    expect(settingsService.payment).not.toHaveBeenCalled();
+    ).rejects.toMatchObject({ code: 'PAYMENT_METHOD_UNAVAILABLE' });
+    expect(settingsService.payment).toHaveBeenCalledTimes(1);
   });
 
   /** One read per placement, not one per line. */

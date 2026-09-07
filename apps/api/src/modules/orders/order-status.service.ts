@@ -9,6 +9,8 @@ import {
   InventoryTransactionType,
   NotificationChannel,
   OrderChannelEnum,
+  PaymentMethodEnum,
+  PaymentStatusEnum,
 } from '../../entities/enums';
 import { AuditAction, AuditEntity, AuditLogService } from '../admin/audit-log.service';
 import { checkLowStock } from '../inventory/check-low-stock';
@@ -160,6 +162,18 @@ export class OrderStatusService {
         `No order ${orderNumber}.`,
         HttpStatus.NOT_FOUND,
         { orderNumber },
+      );
+    }
+
+    if (
+      order.paymentMethod === PaymentMethodEnum.ONLINE &&
+      order.paymentStatus !== PaymentStatusEnum.COLLECTED &&
+      to !== 'cancelled'
+    ) {
+      throw new DomainError(
+        ErrorCodes.PAYMENT_METHOD_UNAVAILABLE,
+        'Confirm online payment before fulfilling this order.',
+        HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
 
